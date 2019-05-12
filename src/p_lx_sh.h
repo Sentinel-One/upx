@@ -42,7 +42,7 @@ class PackLinuxI386sh : public PackLinuxI386
 {
     typedef PackLinuxI386 super;
 public:
-    PackLinuxI386sh(InputFile *f);
+    PackLinuxI386sh(UPXInputFile *f);
     virtual ~PackLinuxI386sh();
     virtual int getVersion() const { return 13; }
     virtual int getFormat() const { return UPX_F_LINUX_SH_i386; }
@@ -51,8 +51,8 @@ public:
     virtual const int *getFilters() const { return NULL; }
     virtual void buildLoader(const Filter *);
 
-    virtual void pack1(OutputFile *fo, Filter &ft);
-    virtual off_t pack3(OutputFile *fo, Filter &ft);
+    virtual void pack1(UPXOutputFile *fo, Filter &ft);
+    virtual off_t pack3(UPXOutputFile *fo, Filter &ft);
 
     virtual bool canPack();
     // virtual void unpack(OutputFile *fo) { super::unpack(fo); }

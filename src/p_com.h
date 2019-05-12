@@ -38,7 +38,7 @@ class PackCom : public Packer
 {
     typedef Packer super;
 public:
-    PackCom(InputFile *f) : super(f) { bele = &N_BELE_RTP::le_policy; }
+    PackCom(UPXInputFile *f) : super(f) { bele = &N_BELE_RTP::le_policy; }
     virtual int getVersion() const { return 13; }
     virtual int getFormat() const { return UPX_F_DOS_COM; }
     virtual const char *getName() const { return "dos/com"; }
@@ -47,8 +47,8 @@ public:
     virtual const int *getCompressionMethods(int method, int level) const;
     virtual const int *getFilters() const;
 
-    virtual void pack(OutputFile *fo);
-    virtual void unpack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual bool canPack();
     virtual int canUnpack();
@@ -59,7 +59,7 @@ protected:
 
 protected:
     virtual void buildLoader(const Filter *ft);
-    virtual void patchLoader(OutputFile *fo, upx_byte *, int, unsigned);
+    virtual void patchLoader(UPXOutputFile *fo, upx_byte *, int, unsigned);
     virtual void addFilter16(int filter_id);
 };
 

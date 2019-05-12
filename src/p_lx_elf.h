@@ -38,7 +38,7 @@ class PackLinuxElf : public PackUnix
 {
     typedef PackUnix super;
 public:
-    PackLinuxElf(InputFile *f);
+    PackLinuxElf(UPXInputFile *f);
     virtual ~PackLinuxElf();
     /*virtual void buildLoader(const Filter *);*/
     virtual bool canUnpackVersion(int version) const { return (version >= 11); }
@@ -49,19 +49,19 @@ protected:
     // All other virtual functions in this class must be pure virtual
     // because they depend on Elf32 or Elf64 data structures, which differ.
 
-    virtual void pack1(OutputFile *, Filter &) = 0;  // generate executable header
-    virtual int  pack2(OutputFile *, Filter &) = 0;  // append compressed data
-    virtual off_t pack3(OutputFile *, Filter &) = 0;  // append loader
+    virtual void pack1(UPXOutputFile *, Filter &) = 0;  // generate executable header
+    virtual int  pack2(UPXOutputFile *, Filter &) = 0;  // append compressed data
+    virtual off_t pack3(UPXOutputFile *, Filter &) = 0;  // append loader
     //virtual void pack4(OutputFile *, Filter &) = 0;  // append pack header
 
     virtual void generateElfHdr(
-        OutputFile *,
+        UPXOutputFile *,
         void const *proto,
         unsigned const brka
     ) = 0;
     virtual void defineSymbols(Filter const *);
     virtual void addStubEntrySections(Filter const *);
-    virtual void unpack(OutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual upx_uint64_t elf_unsigned_dynamic(unsigned) const = 0;
     static unsigned elf_hash(char const *) /*const*/;
@@ -109,29 +109,29 @@ class PackLinuxElf32 : public PackLinuxElf
 {
     typedef PackLinuxElf super;
 public:
-    PackLinuxElf32(InputFile *f);
+    PackLinuxElf32(UPXInputFile *f);
     virtual ~PackLinuxElf32();
 protected:
-    virtual void PackLinuxElf32help1(InputFile *f);
+    virtual void PackLinuxElf32help1(UPXInputFile *f);
     virtual int checkEhdr(Elf32_Ehdr const *ehdr) const;
     virtual bool canPack();
 
     // These ARM routines are essentially common to big/little endian,
     // but the class hierarchy splits after this class.
     virtual void ARM_defineSymbols(Filter const *ft);
-    virtual void ARM_updateLoader(OutputFile *);
+    virtual void ARM_updateLoader(UPXOutputFile *);
     virtual int  ARM_is_QNX(void);
 
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
-    virtual int  pack2(OutputFile *, Filter &);  // append compressed data
-    virtual off_t pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append pack header
-    virtual void unpack(OutputFile *fo);
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
+    virtual int  pack2(UPXOutputFile *, Filter &);  // append compressed data
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append pack header
+    virtual void unpack(UPXOutputFile *fo);
     virtual void unRel32(unsigned dt_rel, Elf32_Rel *rel0, unsigned relsz,
-        MemBuffer &membuf, unsigned const load_off, OutputFile *fo);
+        MemBuffer &membuf, unsigned const load_off, UPXOutputFile *fo);
 
     virtual void generateElfHdr(
-        OutputFile *,
+        UPXOutputFile *,
         void const *proto,
         unsigned const brka
     );
@@ -145,7 +145,7 @@ protected:
     );
     virtual off_t getbrk(const Elf32_Phdr *phdr, int e_phnum) const;
     virtual void patchLoader();
-    virtual void updateLoader(OutputFile *fo);
+    virtual void updateLoader(UPXOutputFile *fo);
     virtual unsigned find_LOAD_gap(Elf32_Phdr const *const phdri, unsigned const k,
         unsigned const e_phnum);
     virtual off_t getbase(const Elf32_Phdr *phdr, int e_phnum) const;
@@ -245,25 +245,25 @@ class PackLinuxElf64 : public PackLinuxElf
 {
     typedef PackLinuxElf super;
 public:
-    PackLinuxElf64(InputFile *f);
+    PackLinuxElf64(UPXInputFile *f);
     virtual ~PackLinuxElf64();
     /*virtual void buildLoader(const Filter *);*/
 
 protected:
-    virtual void PackLinuxElf64help1(InputFile *f);
+    virtual void PackLinuxElf64help1(UPXInputFile *f);
     virtual int checkEhdr(Elf64_Ehdr const *ehdr) const;
     virtual bool canPack();
 
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
-    virtual int  pack2(OutputFile *, Filter &);  // append compressed data
-    virtual off_t pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append pack header
-    virtual void unpack(OutputFile *fo);
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
+    virtual int  pack2(UPXOutputFile *, Filter &);  // append compressed data
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append pack header
+    virtual void unpack(UPXOutputFile *fo);
     virtual void unRela64(upx_uint64_t dt_rela, Elf64_Rela *rela0, unsigned relasz,
-        MemBuffer &membuf, upx_uint64_t const load_off, OutputFile *fo);
+        MemBuffer &membuf, upx_uint64_t const load_off, UPXOutputFile *fo);
 
     virtual void generateElfHdr(
-        OutputFile *,
+        UPXOutputFile *,
         void const *proto,
         unsigned const brka
     );
@@ -277,7 +277,7 @@ protected:
     );
     virtual off_t getbrk(const Elf64_Phdr *phdr, int e_phnum) const;
     virtual void patchLoader();
-    virtual void updateLoader(OutputFile *fo);
+    virtual void updateLoader(UPXOutputFile *fo);
     virtual unsigned find_LOAD_gap(Elf64_Phdr const *const phdri, unsigned const k,
         unsigned const e_phnum);
     bool calls_crt1(Elf64_Rela const *rela, int sz);
@@ -368,7 +368,7 @@ class PackLinuxElf32Be : public PackLinuxElf32
 {
     typedef PackLinuxElf32 super;
 protected:
-    PackLinuxElf32Be(InputFile *f) : super(f) {
+    PackLinuxElf32Be(UPXInputFile *f) : super(f) {
         bele = &N_BELE_RTP::be_policy;
         PackLinuxElf32help1(f);
     }
@@ -378,7 +378,7 @@ class PackLinuxElf32Le : public PackLinuxElf32
 {
     typedef PackLinuxElf32 super;
 protected:
-    PackLinuxElf32Le(InputFile *f) : super(f) {
+    PackLinuxElf32Le(UPXInputFile *f) : super(f) {
         bele = &N_BELE_RTP::le_policy;
         PackLinuxElf32help1(f);
     }
@@ -388,7 +388,7 @@ class PackLinuxElf64Le : public PackLinuxElf64
 {
     typedef PackLinuxElf64 super;
 protected:
-    PackLinuxElf64Le(InputFile *f) : super(f) {
+    PackLinuxElf64Le(UPXInputFile *f) : super(f) {
         lg2_page=16;
         page_size=1u<<lg2_page;
         bele = &N_BELE_RTP::le_policy;
@@ -400,7 +400,7 @@ class PackLinuxElf64Be : public PackLinuxElf64
 {
     typedef PackLinuxElf64 super;
 protected:
-    PackLinuxElf64Be(InputFile *f) : super(f) {
+    PackLinuxElf64Be(UPXInputFile *f) : super(f) {
         lg2_page=16;
         page_size=1u<<lg2_page;
         bele = &N_BELE_RTP::be_policy;
@@ -417,14 +417,14 @@ class PackLinuxElf64amd : public PackLinuxElf64Le
 {
     typedef PackLinuxElf64Le super;
 public:
-    PackLinuxElf64amd(InputFile *f);
+    PackLinuxElf64amd(UPXInputFile *f);
     virtual ~PackLinuxElf64amd();
     virtual int getFormat() const { return UPX_F_LINUX_ELF64_AMD; }
     virtual const char *getName() const { return "linux/amd64"; }
     virtual const char *getFullName(const options_t *) const { return "amd64-linux.elf"; }
     virtual const int *getFilters() const;
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
     virtual Linker* newLinker() const;
     virtual void defineSymbols(Filter const *);
@@ -434,14 +434,14 @@ class PackLinuxElf64arm : public PackLinuxElf64Le
 {
     typedef PackLinuxElf64Le super;
 public:
-    PackLinuxElf64arm(InputFile *f);
+    PackLinuxElf64arm(UPXInputFile *f);
     virtual ~PackLinuxElf64arm();
     virtual int getFormat() const { return UPX_F_LINUX_ELF64_ARM; }
     virtual const char *getName() const { return "linux/arm64"; }
     virtual const char *getFullName(const options_t *) const { return "arm64-linux.elf"; }
     virtual const int *getFilters() const;
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
     virtual Linker* newLinker() const;
     virtual void defineSymbols(Filter const *);
@@ -456,14 +456,14 @@ class PackLinuxElf32ppc : public PackLinuxElf32Be
 {
     typedef PackLinuxElf32Be super;
 public:
-    PackLinuxElf32ppc(InputFile *f);
+    PackLinuxElf32ppc(UPXInputFile *f);
     virtual ~PackLinuxElf32ppc();
     virtual int getFormat() const { return UPX_F_LINUX_ELFPPC32; }
     virtual const char *getName() const { return "linux/ppc32"; }
     virtual const char *getFullName(const options_t *) const { return "powerpc-linux.elf"; }
     virtual const int *getFilters() const;
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
     virtual Linker* newLinker() const;
 };
@@ -476,7 +476,7 @@ class PackLinuxElf64ppcle : public PackLinuxElf64Le
 {
     typedef PackLinuxElf64Le super;
 public:
-    PackLinuxElf64ppcle(InputFile *f);
+    PackLinuxElf64ppcle(UPXInputFile *f);
     virtual ~PackLinuxElf64ppcle();
     virtual int getFormat() const { return UPX_F_LINUX_ELFPPC64LE; }
     virtual const char *getName() const { return "linux/ppc64le"; }
@@ -485,7 +485,7 @@ public:
 protected:
     unsigned lg2_page;  // log2(PAGE_SIZE)
     unsigned page_size;  // 1u<<lg2_page
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
     virtual Linker* newLinker() const;
 };
@@ -495,7 +495,7 @@ class PackLinuxElf64ppc : public PackLinuxElf64Be
 {
     typedef PackLinuxElf64Be super;
 public:
-    PackLinuxElf64ppc(InputFile *f);
+    PackLinuxElf64ppc(UPXInputFile *f);
     virtual ~PackLinuxElf64ppc();
     virtual int getFormat() const { return UPX_F_LINUX_ELFPPC64; }
     virtual const char *getName() const { return "linux/ppc64"; }
@@ -504,7 +504,7 @@ public:
 protected:
     unsigned lg2_page;  // log2(PAGE_SIZE)
     unsigned page_size;  // 1u<<lg2_page
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
     virtual Linker* newLinker() const;
 };
@@ -518,7 +518,7 @@ class PackLinuxElf32x86 : public PackLinuxElf32Le
 {
     typedef PackLinuxElf32Le super;
 public:
-    PackLinuxElf32x86(InputFile *f);
+    PackLinuxElf32x86(UPXInputFile *f);
     virtual ~PackLinuxElf32x86();
     virtual int getFormat() const { return UPX_F_LINUX_ELF_i386; }
     virtual const char *getName() const { return "linux/i386"; }
@@ -526,7 +526,7 @@ public:
     virtual const int *getFilters() const;
 
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
 
     virtual void buildLoader(const Filter *);
     virtual void addStubEntrySections(Filter const *);
@@ -538,14 +538,14 @@ class PackBSDElf32x86 : public PackLinuxElf32x86
 {
     typedef PackLinuxElf32x86 super;
 public:
-    PackBSDElf32x86(InputFile *f);
+    PackBSDElf32x86(UPXInputFile *f);
     virtual ~PackBSDElf32x86();
     virtual int getFormat() const = 0;
     virtual const char *getName() const = 0;
     virtual const char *getFullName(const options_t *) const = 0;
 
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
 
     virtual void buildLoader(const Filter *);
 };
@@ -554,7 +554,7 @@ class PackFreeBSDElf32x86 : public PackBSDElf32x86
 {
     typedef PackBSDElf32x86 super;
 public:
-    PackFreeBSDElf32x86(InputFile *f);
+    PackFreeBSDElf32x86(UPXInputFile *f);
     virtual ~PackFreeBSDElf32x86();
     virtual int getFormat() const { return UPX_F_BSD_ELF_i386; }
     virtual const char *getName() const { return "freebsd/i386"; }
@@ -565,7 +565,7 @@ class PackNetBSDElf32x86 : public PackLinuxElf32x86
 {
     typedef PackLinuxElf32x86 super;
 public:
-    PackNetBSDElf32x86(InputFile *f);
+    PackNetBSDElf32x86(UPXInputFile *f);
     virtual ~PackNetBSDElf32x86();
     virtual int getFormat() const { return UPX_F_BSD_ELF_i386; }
     virtual const char *getName() const { return "netbsd/i386"; }
@@ -573,7 +573,7 @@ public:
 protected:
     virtual void buildLoader(const Filter *ft);
     virtual void generateElfHdr(
-        OutputFile *,
+        UPXOutputFile *,
         void const *proto,
         unsigned const brka
     );
@@ -583,7 +583,7 @@ class PackOpenBSDElf32x86 : public PackBSDElf32x86
 {
     typedef PackBSDElf32x86 super;
 public:
-    PackOpenBSDElf32x86(InputFile *f);
+    PackOpenBSDElf32x86(UPXInputFile *f);
     virtual ~PackOpenBSDElf32x86();
     virtual int getFormat() const { return UPX_F_BSD_ELF_i386; }
     virtual const char *getName() const { return "openbsd/i386"; }
@@ -592,7 +592,7 @@ public:
 protected:
     virtual void buildLoader(const Filter *ft);
     virtual void generateElfHdr(
-        OutputFile *,
+        UPXOutputFile *,
         void const *proto,
         unsigned const brka
     );
@@ -607,7 +607,7 @@ class PackLinuxElf32armLe : public PackLinuxElf32Le
 {
     typedef PackLinuxElf32Le super;
 public:
-    PackLinuxElf32armLe(InputFile *f);
+    PackLinuxElf32armLe(UPXInputFile *f);
     virtual ~PackLinuxElf32armLe();
     virtual int getFormat() const { return UPX_F_LINUX_ELF32_ARMEL; }
     virtual const char *getName() const { return "linux/arm"; }
@@ -617,9 +617,9 @@ public:
 protected:
     virtual const int *getCompressionMethods(int method, int level) const;
     virtual Linker* newLinker() const;
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
-    virtual void updateLoader(OutputFile *);
+    virtual void updateLoader(UPXOutputFile *);
     virtual void defineSymbols(Filter const *);
 };
 
@@ -627,7 +627,7 @@ class PackLinuxElf32armBe : public PackLinuxElf32Be
 {
     typedef PackLinuxElf32Be super;
 public:
-    PackLinuxElf32armBe(InputFile *f);
+    PackLinuxElf32armBe(UPXInputFile *f);
     virtual ~PackLinuxElf32armBe();
     virtual int getFormat() const { return UPX_F_LINUX_ELF32_ARMEB; }
     virtual const char *getName() const { return "linux/armeb"; }
@@ -637,9 +637,9 @@ public:
 protected:
     virtual const int *getCompressionMethods(int method, int level) const;
     virtual Linker* newLinker() const;
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
-    virtual void updateLoader(OutputFile *);
+    virtual void updateLoader(UPXOutputFile *);
     virtual void defineSymbols(Filter const *);
 };
 
@@ -647,7 +647,7 @@ class PackLinuxElf32mipseb : public PackLinuxElf32Be
 {
     typedef PackLinuxElf32Be super;
 public:
-    PackLinuxElf32mipseb(InputFile *f);
+    PackLinuxElf32mipseb(UPXInputFile *f);
     virtual ~PackLinuxElf32mipseb();
     virtual int getFormat() const { return UPX_F_LINUX_ELF32_MIPSEB; }
     virtual const char *getName() const { return "linux/mips"; }
@@ -656,9 +656,9 @@ public:
 
 protected:
     virtual Linker* newLinker() const;
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
-    virtual void updateLoader(OutputFile *);
+    virtual void updateLoader(UPXOutputFile *);
     virtual void defineSymbols(Filter const *);
 };
 
@@ -666,7 +666,7 @@ class PackLinuxElf32mipsel : public PackLinuxElf32Le
 {
     typedef PackLinuxElf32Le super;
 public:
-    PackLinuxElf32mipsel(InputFile *f);
+    PackLinuxElf32mipsel(UPXInputFile *f);
     virtual ~PackLinuxElf32mipsel();
     virtual int getFormat() const { return UPX_F_LINUX_ELF32_MIPSEL; }
     virtual const char *getName() const { return "linux/mipsel"; }
@@ -675,9 +675,9 @@ public:
 
 protected:
     virtual Linker* newLinker() const;
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     virtual void buildLoader(const Filter *);
-    virtual void updateLoader(OutputFile *);
+    virtual void updateLoader(UPXOutputFile *);
     virtual void defineSymbols(Filter const *);
 };
 

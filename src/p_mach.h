@@ -757,26 +757,26 @@ protected:
     typedef typename MachClass::Mach_source_version_command Mach_source_version_command;
 
 public:
-    PackMachBase(InputFile *, unsigned cpuid, unsigned filetype,
+    PackMachBase(UPXInputFile *, unsigned cpuid, unsigned filetype,
         unsigned t_flavor, unsigned ts_word_cnt, unsigned tc_size);
     virtual ~PackMachBase();
     virtual int getVersion() const { return 13; }
     virtual const int *getCompressionMethods(int method, int level) const;
 
     // called by the generic pack()
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
-    virtual int  pack2(OutputFile *, Filter &);  // append compressed data
-    virtual off_t pack3(OutputFile *, Filter &) /*= 0*/;  // append loader
-    virtual void pack4(OutputFile *, Filter &) /*= 0*/;  // append PackHeader
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
+    virtual int  pack2(UPXOutputFile *, Filter &);  // append compressed data
+    virtual off_t pack3(UPXOutputFile *, Filter &) /*= 0*/;  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &) /*= 0*/;  // append PackHeader
 
-    virtual void pack4dylib(OutputFile *, Filter &, Addr init_address);
+    virtual void pack4dylib(UPXOutputFile *, Filter &, Addr init_address);
 
     virtual int  threado_size() const = 0;
     virtual void threado_setPC(upx_uint64_t pc) = 0;
-    virtual void threado_rewrite(OutputFile *) = 0;
-    virtual void threado_write(OutputFile *) = 0;
-    virtual void pack1_setup_threado(OutputFile *const fo) = 0;
-    virtual void unpack(OutputFile *fo);
+    virtual void threado_rewrite(UPXOutputFile *) = 0;
+    virtual void threado_write(UPXOutputFile *) = 0;
+    virtual void pack1_setup_threado(UPXOutputFile *const fo) = 0;
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual bool canPack();
     virtual int canUnpack();
@@ -785,7 +785,7 @@ public:
 protected:
     virtual void patchLoader();
     virtual void patchLoaderChecksum();
-    virtual void updateLoader(OutputFile *);
+    virtual void updateLoader(UPXOutputFile *);
     virtual void buildLoader(const Filter *ft);
     virtual void buildMachLoader(
         upx_byte const *const proto,
@@ -878,7 +878,7 @@ class PackMachPPC32 : public PackMachBase<MachClass_BE32>
     typedef PackMachBase<MachClass_BE32> super;
 
 public:
-    PackMachPPC32(InputFile *f);
+    PackMachPPC32(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_MACH_PPC32; }
     virtual const char *getName() const { return "macho/ppc32"; }
@@ -887,7 +887,7 @@ public:
 protected:
     virtual const int *getFilters() const;
 
-    virtual void pack1_setup_threado(OutputFile *const fo);
+    virtual void pack1_setup_threado(UPXOutputFile *const fo);
     virtual Linker* newLinker() const;
     virtual void addStubEntrySections(Filter const *);
 
@@ -911,8 +911,8 @@ protected:
         threado.count =  my_thread_state_word_count;
         threado.state.srr0 = pc;
     }
-    void threado_rewrite(OutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
-    void   threado_write(OutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
+    void threado_rewrite(UPXOutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
+    void   threado_write(UPXOutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
 
     upx_uint64_t threadc_getPC(void const *ptr) {
         Mach_thread_command const *tc = (Mach_thread_command const *)ptr;
@@ -931,7 +931,7 @@ class PackMachPPC64LE : public PackMachBase<MachClass_LE64>
     typedef PackMachBase<MachClass_LE64> super;
 
 public:
-    PackMachPPC64LE(InputFile *f);
+    PackMachPPC64LE(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_MACH_PPC64LE; }
     virtual const char *getName() const { return "macho/ppc64le"; }
@@ -940,7 +940,7 @@ public:
 protected:
     virtual const int *getFilters() const;
 
-    virtual void pack1_setup_threado(OutputFile *const fo);
+    virtual void pack1_setup_threado(UPXOutputFile *const fo);
     virtual Linker* newLinker() const;
 
     __packed_struct(Mach_thread_command)
@@ -963,8 +963,8 @@ protected:
         threado.count =  my_thread_state_word_count;
         threado.state64.srr0 = pc;
     }
-    void threado_rewrite(OutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
-    void   threado_write(OutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
+    void threado_rewrite(UPXOutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
+    void   threado_write(UPXOutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
 
     upx_uint64_t threadc_getPC(void const *ptr) {
         Mach_thread_command const *tc = (Mach_thread_command const *)ptr;
@@ -983,14 +983,14 @@ class PackDylibPPC32 : public PackMachPPC32
     typedef PackMachPPC32 super;
 
 public:
-    PackDylibPPC32(InputFile *f);
+    PackDylibPPC32(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_DYLIB_PPC32; }
     virtual const char *getName() const { return "dylib/ppc32"; }
     virtual const char *getFullName(const options_t *) const { return "powerpc-darwin.dylib"; }
 protected:
-    virtual off_t pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append PackHeader
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append PackHeader
 };
 
 class PackDylibPPC64LE : public PackMachPPC64LE
@@ -998,14 +998,14 @@ class PackDylibPPC64LE : public PackMachPPC64LE
     typedef PackMachPPC64LE super;
 
 public:
-    PackDylibPPC64LE(InputFile *f);
+    PackDylibPPC64LE(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_DYLIB_PPC64LE; }
     virtual const char *getName() const { return "dylib/ppc64le"; }
     virtual const char *getFullName(const options_t *) const { return "powerpc64le-darwin.dylib"; }
 protected:
-    virtual off_t pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append PackHeader
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append PackHeader
 };
 
 class PackMachI386 : public PackMachBase<MachClass_LE32>
@@ -1013,7 +1013,7 @@ class PackMachI386 : public PackMachBase<MachClass_LE32>
     typedef PackMachBase<MachClass_LE32> super;
 
 public:
-    PackMachI386(InputFile *f);
+    PackMachI386(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_MACH_i386; }
     virtual const char *getName() const { return "macho/i386"; }
@@ -1021,7 +1021,7 @@ public:
 protected:
     virtual const int *getFilters() const;
 
-    virtual void pack1_setup_threado(OutputFile *const fo);
+    virtual void pack1_setup_threado(UPXOutputFile *const fo);
     virtual Linker* newLinker() const;
     virtual void addStubEntrySections(Filter const *);
 
@@ -1045,8 +1045,8 @@ protected:
         threado.count =  my_thread_state_word_count;
         threado.state.eip = pc;
     }
-    void threado_rewrite(OutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
-    void   threado_write(OutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
+    void threado_rewrite(UPXOutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
+    void   threado_write(UPXOutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
 
     upx_uint64_t threadc_getPC(void const *ptr) {
         Mach_thread_command const *tc = (Mach_thread_command const *)ptr;
@@ -1065,14 +1065,14 @@ class PackDylibI386 : public PackMachI386
     typedef PackMachI386 super;
 
 public:
-    PackDylibI386(InputFile *f);
+    PackDylibI386(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_DYLIB_i386; }
     virtual const char *getName() const { return "dylib/i386"; }
     virtual const char *getFullName(const options_t *) const { return "i386-darwin.dylib"; }
 protected:
-    virtual off_t pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append PackHeader
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append PackHeader
 };
 
 class PackMachAMD64 : public PackMachBase<MachClass_LE64>
@@ -1080,7 +1080,7 @@ class PackMachAMD64 : public PackMachBase<MachClass_LE64>
     typedef PackMachBase<MachClass_LE64> super;
 
 public:
-    PackMachAMD64(InputFile *f);
+    PackMachAMD64(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_MACH_AMD64; }
     virtual const char *getName() const { return "macho/amd64"; }
@@ -1088,7 +1088,7 @@ public:
 protected:
     virtual const int *getFilters() const;
 
-    virtual void pack1_setup_threado(OutputFile *const fo);
+    virtual void pack1_setup_threado(UPXOutputFile *const fo);
     virtual Linker* newLinker() const;
     virtual void addStubEntrySections(Filter const *);
 
@@ -1113,8 +1113,8 @@ protected:
         threado.count =  my_thread_state_word_count;
         threado.state.rip = pc;
     }
-    void threado_rewrite(OutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
-    void   threado_write(OutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
+    void threado_rewrite(UPXOutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
+    void   threado_write(UPXOutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
 
     upx_uint64_t threadc_getPC(void const *ptr) {
         Mach_thread_command const *tc = (Mach_thread_command const *)ptr;
@@ -1133,14 +1133,14 @@ class PackDylibAMD64 : public PackMachAMD64
     typedef PackMachAMD64 super;
 
 public:
-    PackDylibAMD64(InputFile *f);
+    PackDylibAMD64(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_DYLIB_AMD64; }
     virtual const char *getName() const { return "dylib/amd64"; }
     virtual const char *getFullName(const options_t *) const { return "amd64-darwin.dylib"; }
 protected:
-    virtual off_t pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append PackHeader
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append PackHeader
 };
 
 class PackMachARMEL : public PackMachBase<MachClass_LE32>
@@ -1148,7 +1148,7 @@ class PackMachARMEL : public PackMachBase<MachClass_LE32>
     typedef PackMachBase<MachClass_LE32> super;
 
 public:
-    PackMachARMEL(InputFile *f);
+    PackMachARMEL(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_MACH_ARMEL; }
     virtual const char *getName() const { return "macho/arm"; }
@@ -1157,7 +1157,7 @@ protected:
     virtual const int *getCompressionMethods(int method, int level) const;
     virtual const int *getFilters() const;
 
-    virtual void pack1_setup_threado(OutputFile *const fo);
+    virtual void pack1_setup_threado(UPXOutputFile *const fo);
     virtual Linker* newLinker() const;
     virtual void addStubEntrySections(Filter const *);
 
@@ -1181,8 +1181,8 @@ protected:
         threado.count =  my_thread_state_word_count;
         threado.state.pc = pc;
     }
-    void threado_rewrite(OutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
-    void   threado_write(OutputFile *fo) { return   fo->write(&threado, sizeof(threado)); }
+    void threado_rewrite(UPXOutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
+    void   threado_write(UPXOutputFile *fo) { return   fo->write(&threado, sizeof(threado)); }
 
     upx_uint64_t threadc_getPC(void const *ptr) {
         Mach_thread_command const *tc = (Mach_thread_command const *)ptr;
@@ -1201,7 +1201,7 @@ class PackMachARM64EL : public PackMachBase<MachClass_LE64>
     typedef PackMachBase<MachClass_LE64> super;
 
 public:
-    PackMachARM64EL(InputFile *f);
+    PackMachARM64EL(UPXInputFile *f);
 
     virtual int getFormat() const { return UPX_F_MACH_ARM64EL; }
     virtual const char *getName() const { return "macho/arm64"; }
@@ -1209,7 +1209,7 @@ public:
 protected:
     virtual const int *getFilters() const;
 
-    virtual void pack1_setup_threado(OutputFile *const fo);
+    virtual void pack1_setup_threado(UPXOutputFile *const fo);
     virtual Linker* newLinker() const;
     virtual void addStubEntrySections(Filter const *);
 
@@ -1233,8 +1233,8 @@ protected:
         threado.count =  my_thread_state_word_count;
         threado.state.pc = pc;
     }
-    void threado_rewrite(OutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
-    void   threado_write(OutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
+    void threado_rewrite(UPXOutputFile *fo) { fo->rewrite(&threado, sizeof(threado)); }
+    void   threado_write(UPXOutputFile *fo) {   fo->write(&threado, sizeof(threado)); }
 
     upx_uint64_t threadc_getPC(void const *ptr) {
         Mach_thread_command const *tc = (Mach_thread_command const *)ptr;
@@ -1252,7 +1252,7 @@ class PackMachFat : public Packer
 {
     typedef Packer super;
 public:
-    PackMachFat(InputFile *f);
+    PackMachFat(UPXInputFile *f);
     virtual ~PackMachFat();
 
     virtual int getVersion() const { return 13; }
@@ -1265,8 +1265,8 @@ public:
 protected:
     // implementation
     virtual unsigned check_fat_head();  // number of architectures
-    virtual void pack(OutputFile *fo);
-    virtual void unpack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
     virtual void list();
 
 public:

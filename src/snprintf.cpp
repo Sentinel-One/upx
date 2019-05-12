@@ -839,9 +839,9 @@ int __acc_cdecl_va upx_asprintf(char **ptr, const char *format, ...) {
 }
 
 #undef strlen
-upx_rsize_t upx_strlen(const char *s) {
+upx_rsize_t upx_strlen(const upx_byte *s) {
     assert(s != NULL);
-    size_t len = strlen(s);
+    size_t len = strlen((const char *)(s));
     assert(len < UPX_RSIZE_MAX_STR);
     return len;
 }

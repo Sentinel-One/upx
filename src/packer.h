@@ -31,8 +31,8 @@
 
 #include "mem.h"
 
-class InputFile;
-class OutputFile;
+class UPXInputFile;
+class UPXOutputFile;
 class Packer;
 class PackMaster;
 class UiPacker;
@@ -116,7 +116,7 @@ class Packer
     //friend class PackMaster;
     friend class UiPacker;
 protected:
-    Packer(InputFile *f);
+    Packer(UPXInputFile *f);
 public:
     virtual ~Packer();
     virtual void assertPacker() const;
@@ -132,8 +132,8 @@ public:
     // PackMaster entries
     void initPackHeader();
     void updatePackHeader();
-    void doPack(OutputFile *fo);
-    void doUnpack(OutputFile *fo);
+    void doPack(UPXOutputFile *fo);
+    void doUnpack(UPXOutputFile *fo);
     void doTest();
     void doList();
     void doFileInfo();
@@ -151,8 +151,8 @@ protected:
 
 protected:
     // implementation
-    virtual void pack(OutputFile *fo) = 0;
-    virtual void unpack(OutputFile *fo) = 0;
+    virtual void pack(UPXOutputFile *fo) = 0;
+    virtual void unpack(UPXOutputFile *fo) = 0;
     virtual void test();
     virtual void list();
     virtual void fileInfo();
@@ -175,7 +175,7 @@ protected:
                             bool verify_checksum = true, Filter *ft = NULL);
     virtual bool checkDefaultCompressionRatio(unsigned u_len, unsigned c_len) const;
     virtual bool checkCompressionRatio(unsigned u_len, unsigned c_len) const;
-    virtual bool checkFinalCompressionRatio(const OutputFile *fo) const;
+    virtual bool checkFinalCompressionRatio(const UPXOutputFile *fo) const;
 
     // high-level compression drivers
     void compressWithFilters(Filter *ft,
@@ -264,9 +264,9 @@ protected:
     virtual void defineFilterSymbols(const Filter *ft);
 
     // stub and overlay util
-    static void handleStub(InputFile *fi, OutputFile *fo, unsigned size);
+    static void handleStub(UPXInputFile *fi, UPXOutputFile *fo, unsigned size);
     virtual void checkOverlay(unsigned overlay);
-    virtual void copyOverlay(OutputFile *fo, unsigned overlay,
+    virtual void copyOverlay(UPXOutputFile *fo, unsigned overlay,
                              MemBuffer *buf, bool do_seek=true);
 
     // misc util
@@ -301,7 +301,7 @@ protected:
 
 protected:
     const N_BELE_RTP::AbstractPolicy *bele; // target endianness
-    InputFile *fi;
+    UPXInputFile *fi;
     off_t file_size;        // will get set by constructor
     PackHeader ph;          // must be filled by canUnpack()
     int ph_format;

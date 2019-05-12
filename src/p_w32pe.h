@@ -39,7 +39,7 @@ class PackW32Pe : public PeFile32
     typedef PeFile32 super;
 
 public:
-    PackW32Pe(InputFile *f);
+    PackW32Pe(UPXInputFile *f);
     virtual ~PackW32Pe();
     virtual int getFormat() const { return UPX_F_WIN32_PE; }
     virtual const char *getName() const { return isrtm ? "rtm32/pe" : "win32/pe"; }
@@ -54,7 +54,7 @@ public:
     virtual void addNewRelocations(Reloc &, unsigned upxsection);
     virtual void setOhDataBase(const pe_section_t *osection);
     virtual void setOhHeaderSize(const pe_section_t *osection);
-    virtual void pack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
 
     virtual bool canPack();
 

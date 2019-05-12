@@ -38,7 +38,7 @@ class PackTmt : public Packer
 {
     typedef Packer super;
 public:
-    PackTmt(InputFile *f);
+    PackTmt(UPXInputFile *f);
     virtual int getVersion() const { return 13; }
     virtual int getFormat() const { return UPX_F_TMT_ADAM; }
     virtual const char *getName() const { return "tmt/adam"; }
@@ -46,8 +46,8 @@ public:
     virtual const int *getCompressionMethods(int method, int level) const;
     virtual const int *getFilters() const;
 
-    virtual void pack(OutputFile *fo);
-    virtual void unpack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual bool canPack();
     virtual int canUnpack();

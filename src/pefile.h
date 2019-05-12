@@ -47,7 +47,7 @@ protected:
     class ImportLinker;
     struct pe_section_t;
 
-    PeFile(InputFile *f);
+    PeFile(UPXInputFile *f);
     virtual ~PeFile();
 
     void readSectionHeaders(unsigned objs, unsigned sizeof_ih);
@@ -73,12 +73,12 @@ protected:
     virtual void setOhHeaderSize(const pe_section_t *osection) = 0;
 
     template <typename LEXX, typename ht>
-    void pack0(OutputFile *fo, ht &ih, ht &oh,
+    void pack0(UPXOutputFile *fo, ht &ih, ht &oh,
                unsigned subsystem_mask, upx_uint64_t default_imagebase,
                bool last_section_rsrc_only);
 
     template <typename ht, typename LEXX, typename ord_mask_t>
-    void unpack0(OutputFile *fo, const ht &ih, ht &oh,
+    void unpack0(UPXOutputFile *fo, const ht &ih, ht &oh,
                  ord_mask_t ord_mask, bool set_oft);
 
     // unpacker capabilities
@@ -261,14 +261,14 @@ protected:
 
     //NEW: DLL characteristics definition for ASLR, ... - Stefan Widmann
     enum {
-        IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE         = 0x0040,
-        IMAGE_DLL_CHARACTERISTICS_FORCE_INTEGRITY      = 0x0080,
-        IMAGE_DLL_CHARACTERISTICS_NX_COMPAT            = 0x0100,
-        IMAGE_DLLCHARACTERISTICS_NO_ISOLATION          = 0x0200,
-        IMAGE_DLLCHARACTERISTICS_NO_SEH                = 0x0400,
-        IMAGE_DLLCHARACTERISTICS_NO_BIND               = 0x0800,
-        IMAGE_DLLCHARACTERISTICS_WDM_DRIVER            = 0x2000,
-        IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE = 0x8000
+        IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE         = 0x0040
+        
+        
+        
+        
+        
+        
+        
     };
 
     // predefined resource types
@@ -426,11 +426,11 @@ class PeFile32 : public PeFile
 {
     typedef PeFile super;
 protected:
-    PeFile32(InputFile *f);
+    PeFile32(UPXInputFile *f);
     virtual ~PeFile32();
-    void pack0(OutputFile *fo, unsigned subsystem_mask,
+    void pack0(UPXOutputFile *fo, unsigned subsystem_mask,
                upx_uint64_t default_imagebase, bool last_section_rsrc_only);
-    virtual void unpack(OutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
     virtual int canUnpack();
 
     virtual void readPeHeader();
@@ -486,13 +486,13 @@ class PeFile64 : public PeFile
 {
     typedef PeFile super;
 protected:
-    PeFile64(InputFile *f);
+    PeFile64(UPXInputFile *f);
     virtual ~PeFile64();
 
-    void pack0(OutputFile *fo, unsigned subsystem_mask,
+    void pack0(UPXOutputFile *fo, unsigned subsystem_mask,
                upx_uint64_t default_imagebase);
 
-    virtual void unpack(OutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
     virtual int canUnpack();
 
     virtual void readPeHeader();

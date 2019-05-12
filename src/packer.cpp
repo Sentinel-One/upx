@@ -38,7 +38,7 @@
 //
 **************************************************************************/
 
-Packer::Packer(InputFile *f) :
+Packer::Packer(UPXInputFile *f) :
     bele(NULL),
     fi(f), file_size(-1), ph_format(-1), ph_version(-1),
     uip(NULL), linker(NULL),
@@ -94,14 +94,14 @@ void Packer::assertPacker() const
 // public entries called from class PackMaster
 **************************************************************************/
 
-void Packer::doPack(OutputFile *fo)
+void Packer::doPack(UPXOutputFile *fo)
 {
     uip->uiPackStart(fo);
     pack(fo);
     uip->uiPackEnd(fo);
 }
 
-void Packer::doUnpack(OutputFile *fo)
+void Packer::doUnpack(UPXOutputFile *fo)
 {
     uip->uiUnpackStart(fo);
     unpack(fo);
@@ -344,7 +344,7 @@ bool Packer::checkCompressionRatio(unsigned u_len, unsigned c_len) const
     return checkDefaultCompressionRatio(u_len, c_len);
 }
 
-bool Packer::checkFinalCompressionRatio(const OutputFile *fo) const
+bool Packer::checkFinalCompressionRatio(const UPXOutputFile *fo) const
 {
     const unsigned u_len = file_size;
     const unsigned c_len = fo->getBytesWritten();
@@ -550,7 +550,7 @@ unsigned Packer::findOverlapOverhead(const upx_bytep buf,
 // file i/o utils
 **************************************************************************/
 
-void Packer::handleStub(InputFile *fif, OutputFile *fo, unsigned size)
+void Packer::handleStub(UPXInputFile *fif, UPXOutputFile *fo, unsigned size)
 {
     if (fo)
     {
@@ -583,7 +583,7 @@ void Packer::checkOverlay(unsigned overlay)
 }
 
 
-void Packer::copyOverlay(OutputFile *fo, unsigned overlay,
+void Packer::copyOverlay(UPXOutputFile *fo, unsigned overlay,
                          MemBuffer *buf,
                          bool do_seek)
 {

@@ -39,30 +39,30 @@ class PackUnix : public Packer
 {
     typedef Packer super;
 protected:
-    PackUnix(InputFile *f);
+    PackUnix(UPXInputFile *f);
 public:
     virtual int getVersion() const { return 13; }
     virtual const int *getFilters() const { return NULL; }
     virtual int getStrategy(Filter &);
 
-    virtual void pack(OutputFile *fo);
-    virtual void unpack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual bool canPack();
     virtual int canUnpack();
 
 protected:
     // called by the generic pack()
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
-    virtual int  pack2(OutputFile *, Filter &);  // append compressed data
-    virtual off_t pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append PackHeader
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
+    virtual int  pack2(UPXOutputFile *, Filter &);  // append compressed data
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // append loader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append PackHeader
 
     virtual void patchLoader() = 0;
     virtual void patchLoaderChecksum();
-    virtual void updateLoader(OutputFile *) = 0;
+    virtual void updateLoader(UPXOutputFile *) = 0;
 
-    virtual void writePackHeader(OutputFile *fo);
+    virtual void writePackHeader(UPXOutputFile *fo);
 
     virtual bool checkCompressionRatio(unsigned, unsigned) const;
 
@@ -72,9 +72,9 @@ protected:
         off_t size;
     };
     virtual void packExtent(const Extent &x,
-        unsigned &total_in, unsigned &total_out, Filter *, OutputFile *,
+        unsigned &total_in, unsigned &total_out, Filter *, UPXOutputFile *,
         unsigned hdr_len = 0);
-    virtual void unpackExtent(unsigned wanted, OutputFile *fo,
+    virtual void unpackExtent(unsigned wanted, UPXOutputFile *fo,
         unsigned &total_in, unsigned &total_out,
         unsigned &c_adler, unsigned &u_adler,
         bool first_PF_X, unsigned szb_info, bool is_rewrite = false);
@@ -130,7 +130,7 @@ class PackUnixBe32 : public PackUnix
 {
     typedef PackUnix super;
 protected:
-    PackUnixBe32(InputFile *f) : super(f) { bele = &N_BELE_RTP::be_policy; }
+    PackUnixBe32(UPXInputFile *f) : super(f) { bele = &N_BELE_RTP::be_policy; }
 
     // must agree with stub/linux.hh
     __packed_struct(b_info) // 12-byte header before each compressed block
@@ -162,7 +162,7 @@ class PackUnixLe32 : public PackUnix
 {
     typedef PackUnix super;
 protected:
-    PackUnixLe32(InputFile *f) : super(f) { bele = &N_BELE_RTP::le_policy; }
+    PackUnixLe32(UPXInputFile *f) : super(f) { bele = &N_BELE_RTP::le_policy; }
 
     // must agree with stub/linux.hh
     __packed_struct(b_info) // 12-byte header before each compressed block

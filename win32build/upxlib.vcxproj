@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\compress.h" />
+    <ClInclude Include="..\src\conf.h" />
+    <ClInclude Include="..\src\console.h" />
+    <ClInclude Include="..\src\except.h" />
+    <ClInclude Include="..\src\file.h" />
+    <ClInclude Include="..\src\filter.h" />
+    <ClInclude Include="..\src\InMemoryFile.h" />
+    <ClInclude Include="..\src\InMemoryUnpackW32Pe.h" />
+    <ClInclude Include="..\src\InMemoryUnpackW64Pe.h" />
+    <ClInclude Include="..\src\linker.h" />
+    <ClInclude Include="..\src\mem.h" />
+    <ClInclude Include="..\src\miniacc.h" />
+    <ClInclude Include="..\src\options.h" />
+    <ClInclude Include="..\src\packer.h" />
+    <ClInclude Include="..\src\packmast.h" />
+    <ClInclude Include="..\src\pefile.h" />
+    <ClInclude Include="..\src\p_armpe.h" />
+    <ClInclude Include="..\src\p_com.h" />
+    <ClInclude Include="..\src\p_djgpp2.h" />
+    <ClInclude Include="..\src\p_elf.h" />
+    <ClInclude Include="..\src\p_elf_enum.h" />
+    <ClInclude Include="..\src\p_exe.h" />
+    <ClInclude Include="..\src\p_lx_elf.h" />
+    <ClInclude Include="..\src\p_lx_exc.h" />
+    <ClInclude Include="..\src\p_lx_interp.h" />
+    <ClInclude Include="..\src\p_lx_sh.h" />
+    <ClInclude Include="..\src\p_mach.h" />
+    <ClInclude Include="..\src\p_mach_enum.h" />
+    <ClInclude Include="..\src\p_ps1.h" />
+    <ClInclude Include="..\src\p_sys.h" />
+    <ClInclude Include="..\src\p_tmt.h" />
+    <ClInclude Include="..\src\p_tos.h" />
+    <ClInclude Include="..\src\p_unix.h" />
+    <ClInclude Include="..\src\p_vmlinx.h" />
+    <ClInclude Include="..\src\p_vmlinz.h" />
+    <ClInclude Include="..\src\p_w32pe.h" />
+    <ClInclude Include="..\src\p_w64pep.h" />
+    <ClInclude Include="..\src\p_wcle.h" />
+    <ClInclude Include="..\src\snprintf.h" />
+    <ClInclude Include="..\src\ui.h" />
+    <ClInclude Include="..\src\upxlib.h" />
+    <ClInclude Include="..\src\util.h" />
+    
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\compress.cpp" />
+    <ClCompile Include="..\src\compress_lzma.cpp" />
+    <ClCompile Include="..\src\compress_ucl.cpp" />
+    <ClCompile Include="..\src\compress_zlib.cpp" />
+    <ClCompile Include="..\src\c_file.cpp" />
+    <ClCompile Include="..\src\c_init.cpp" />
+    <ClCompile Include="..\src\c_none.cpp" />
+    <ClCompile Include="..\src\c_screen.cpp" />
+    <ClCompile Include="..\src\except.cpp" />
+    <ClCompile Include="..\src\file.cpp" />
+    <ClCompile Include="..\src\filter.cpp" />
+    <ClCompile Include="..\src\filteri.cpp" />
+    <ClCompile Include="..\src\InMemoryFile.cpp" />
+    <ClCompile Include="..\src\InMemoryUnpackW32Pe.cpp" />
+    <ClCompile Include="..\src\InMemoryUnpackW64Pe.cpp" />
+    <ClCompile Include="..\src\linker.cpp" />
+    <ClCompile Include="..\src\mem.cpp" />
+    <ClCompile Include="..\src\packer.cpp" />
+    <ClCompile Include="..\src\packer_c.cpp" />
+    <ClCompile Include="..\src\packer_f.cpp" />
+    <ClCompile Include="..\src\packhead.cpp" />
+    <ClCompile Include="..\src\packmast.cpp" />
+    <ClCompile Include="..\src\pefile.cpp" />
+    <ClCompile Include="..\src\p_armpe.cpp" />
+    <ClCompile Include="..\src\p_com.cpp" />
+    <ClCompile Include="..\src\p_djgpp2.cpp" />
+    <ClCompile Include="..\src\p_exe.cpp" />
+    <ClCompile Include="..\src\p_lx_elf.cpp" />
+    <ClCompile Include="..\src\p_lx_exc.cpp" />
+    <ClCompile Include="..\src\p_lx_interp.cpp" />
+    <ClCompile Include="..\src\p_lx_sh.cpp" />
+    <ClCompile Include="..\src\p_mach.cpp" />
+    <ClCompile Include="..\src\p_ps1.cpp" />
+    <ClCompile Include="..\src\p_sys.cpp" />
+    <ClCompile Include="..\src\p_tmt.cpp" />
+    <ClCompile Include="..\src\p_tos.cpp" />
+    <ClCompile Include="..\src\p_unix.cpp" />
+    <ClCompile Include="..\src\p_vmlinx.cpp" />
+    <ClCompile Include="..\src\p_vmlinz.cpp" />
+    <ClCompile Include="..\src\p_w32pe.cpp" />
+    <ClCompile Include="..\src\p_w64pep.cpp" />
+    <ClCompile Include="..\src\p_wcle.cpp" />
+    <ClCompile Include="..\src\snprintf.cpp" />
+    <ClCompile Include="..\src\ui.cpp" />
+    <ClCompile Include="..\src\upxlib.cpp" />
+    <ClCompile Include="..\src\util.cpp" />
+    
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7124AA41-F360-4266-9FB2-C5811135A021}</ProjectGuid>
+    <RootNamespace>upxlib</RootNamespace>
+    <ProjectName>upxlib</ProjectName>
+  </PropertyGroup>
+  <Import Project="sdk.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UseNativeEnvironment>true</UseNativeEnvironment>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <TestsProject>False</TestsProject>
+    <Keyword>Win32Proj</Keyword>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- Default char type - unsigned -->
+      <AdditionalOptions>/J %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\ucl\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\zlib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\lzma-sdk\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include\;$(SolutionDir)..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;LZMA_API_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  <Import Project="library.props" />
+  <Import Project="userland.props" />
+  
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

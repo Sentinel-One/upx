@@ -38,7 +38,7 @@ class PackW64Pep : public PeFile64
     typedef PeFile64 super;
 
 public:
-    PackW64Pep(InputFile *f);
+    PackW64Pep(UPXInputFile *f);
     virtual ~PackW64Pep();
     virtual int getFormat() const { return UPX_F_WIN64_PEP; }
     virtual const char *getName() const { return "win64/pe"; }
@@ -52,7 +52,7 @@ public:
                                unsigned s1addr);
     virtual void setOhDataBase(const pe_section_t *) {}
     virtual void setOhHeaderSize(const pe_section_t *osection);
-    virtual void pack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
 
     virtual bool canPack();
 

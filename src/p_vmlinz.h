@@ -38,7 +38,7 @@ class PackVmlinuzI386 : public Packer
 {
     typedef Packer super;
 public:
-    PackVmlinuzI386(InputFile *f);
+    PackVmlinuzI386(UPXInputFile *f);
     virtual int getVersion() const { return 13; }
     virtual int getFormat() const { return UPX_F_VMLINUZ_i386; }
     virtual const char *getName() const { return "vmlinuz/i386"; }
@@ -47,8 +47,8 @@ public:
     virtual const int *getFilters() const;
     virtual int getStrategy(Filter &);
 
-    virtual void pack(OutputFile *fo);
-    virtual void unpack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual bool canPack();
     virtual int canUnpack();
@@ -108,13 +108,13 @@ class PackBvmlinuzI386 : public PackVmlinuzI386
 {
     typedef PackVmlinuzI386 super;
 public:
-    PackBvmlinuzI386(InputFile *f) : super(f) { }
+    PackBvmlinuzI386(UPXInputFile *f) : super(f) { }
     virtual int getFormat() const { return UPX_F_BVMLINUZ_i386; }
     virtual const char *getName() const { return "bvmlinuz/i386"; }
     virtual const char *getFullName(const options_t *) const { return "i386-linux.kernel.bvmlinuz"; }
     virtual const int *getFilters() const;
 
-    virtual void pack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
 
 protected:
     virtual void buildLoader(const Filter *ft);
@@ -129,7 +129,7 @@ class PackVmlinuzARMEL : public Packer
 {
     typedef Packer super;
 public:
-    PackVmlinuzARMEL(InputFile *f);
+    PackVmlinuzARMEL(UPXInputFile *f);
     virtual int getVersion() const { return 13; }
     virtual int getFormat() const { return UPX_F_VMLINUZ_ARMEL; }
     virtual const char *getName() const { return "vmlinuz/arm"; }
@@ -138,8 +138,8 @@ public:
     virtual const int *getFilters() const;
     virtual int getStrategy(Filter &);
 
-    virtual void pack(OutputFile *fo);
-    virtual void unpack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual bool canPack();
     virtual int canUnpack();
@@ -150,7 +150,7 @@ protected:
     virtual void readKernel();
 
     virtual void buildLoader(const Filter *ft);
-    virtual unsigned write_vmlinuz_head(OutputFile *fo);
+    virtual unsigned write_vmlinuz_head(UPXOutputFile *fo);
     virtual void defineDecompressorSymbols();
     virtual Linker* newLinker() const;
 

@@ -82,7 +82,7 @@ static void xcheck(size_t poff, size_t plen, const void *b, size_t blen)
 //
 **************************************************************************/
 
-PeFile::PeFile(InputFile *f) : super(f)
+PeFile::PeFile(UPXInputFile *f) : super(f)
 {
     bele = &N_BELE_RTP::le_policy;
     COMPILE_TIME_ASSERT(sizeof(ddirs_t) == 8)
@@ -2227,7 +2227,7 @@ void PeFile::callProcessResources(Resource &res, unsigned &ic)
 }
 
 template <typename LEXX, typename ht>
-void PeFile::pack0(OutputFile *fo, ht &ih, ht &oh,
+void PeFile::pack0(UPXOutputFile *fo, ht &ih, ht &oh,
                    unsigned subsystem_mask, upx_uint64_t default_imagebase,
                    bool last_section_rsrc_only)
 {
@@ -2579,7 +2579,7 @@ void PeFile::pack0(OutputFile *fo, ht &ih, ht &oh,
     infoWriting("compressed data", c_len);
     fo->write(loader,codesize);
     if (opt->debug.dump_stub_loader)
-        OutputFile::dump(opt->debug.dump_stub_loader, loader, codesize);
+        UPXOutputFile::dump(opt->debug.dump_stub_loader, loader, codesize);
     if ((ic = fo->getBytesWritten() & (sizeof(LEXX) - 1)) != 0)
         fo->write(ibuf, sizeof(LEXX) - ic);
     fo->write(otls,sotls);
@@ -2874,7 +2874,7 @@ void PeFile::rebuildImports(upx_byte *& extrainfo,
 }
 
 template <typename ht, typename LEXX, typename ord_mask_t>
-void PeFile::unpack0(OutputFile *fo, const ht &ih, ht &oh,
+void PeFile::unpack0(UPXOutputFile *fo, const ht &ih, ht &oh,
                      ord_mask_t ord_mask, bool set_oft)
 {
     //infoHeader("[Processing %s, format %s, %d sections]", fn_basename(fi->getName()), getName(), objs);
@@ -3008,6 +3008,10 @@ int PeFile::canUnpack0(unsigned max_sections, LE16 &ih_objects,
         return false;
 
     unsigned objs = ih_objects;
+    if (isection != nullptr)
+    {
+        delete[] isection;
+    }
     isection = New(pe_section_t, objs);
     fi->seek(pe_offset + ihsize, SEEK_SET);
     fi->readx(isection,sizeof(pe_section_t)*objs);
@@ -3089,7 +3093,7 @@ PeFile::~PeFile()
 //  PeFile32
 **************************************************************************/
 
-PeFile32::PeFile32(InputFile *f) : super(f)
+PeFile32::PeFile32(UPXInputFile *f) : super(f)
 {
     COMPILE_TIME_ASSERT(sizeof(pe_header_t) == 248)
     COMPILE_TIME_ASSERT_ALIGNED1(pe_header_t)
@@ -3107,7 +3111,7 @@ void PeFile32::readPeHeader()
     isdll = ((ih.flags & DLL_FLAG) != 0);
 }
 
-void PeFile32::pack0(OutputFile *fo, unsigned subsystem_mask,
+void PeFile32::pack0(UPXOutputFile *fo, unsigned subsystem_mask,
                      upx_uint64_t default_imagebase,
                      bool last_section_rsrc_only)
 {
@@ -3115,7 +3119,7 @@ void PeFile32::pack0(OutputFile *fo, unsigned subsystem_mask,
                        default_imagebase, last_section_rsrc_only);
 }
 
-void PeFile32::unpack(OutputFile *fo)
+void PeFile32::unpack(UPXOutputFile *fo)
 {
     bool set_oft = getFormat() == UPX_F_WINCE_ARM_PE;
     unpack0<pe_header_t, LE32>(fo, ih, oh, 1U << 31, set_oft);
@@ -3146,7 +3150,7 @@ void PeFile32::processTls(Reloc *r, const Interval *iv, unsigned a)
 //  PeFile64
 **************************************************************************/
 
-PeFile64::PeFile64(InputFile *f) : super(f)
+PeFile64::PeFile64(UPXInputFile *f) : super(f)
 {
     COMPILE_TIME_ASSERT(sizeof(pe_header_t) == 264)
     COMPILE_TIME_ASSERT_ALIGNED1(pe_header_t)
@@ -3164,13 +3168,13 @@ void PeFile64::readPeHeader()
     isdll = ((ih.flags & DLL_FLAG) != 0);
 }
 
-void PeFile64::pack0(OutputFile *fo, unsigned subsystem_mask,
+void PeFile64::pack0(UPXOutputFile *fo, unsigned subsystem_mask,
                      upx_uint64_t default_imagebase)
 {
     super::pack0<LE64>(fo, ih, oh, subsystem_mask, default_imagebase, false);
 }
 
-void PeFile64::unpack(OutputFile *fo)
+void PeFile64::unpack(UPXOutputFile *fo)
 {
     unpack0<pe_header_t, LE64>(fo, ih, oh, 1ULL << 63, false);
 }

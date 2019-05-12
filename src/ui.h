@@ -28,8 +28,8 @@
 #ifndef __UPX_UI_H
 #define __UPX_UI_H 1
 
-class InputFile;
-class OutputFile;
+class UPXInputFile;
+class UPXOutputFile;
 class Packer;
 class UiPacker;
 
@@ -52,10 +52,10 @@ public:
     static void uiFileInfoTotal();
 
 public:
-    virtual void uiPackStart(const OutputFile *fo);
-    virtual void uiPackEnd(const OutputFile *fo);
-    virtual void uiUnpackStart(const OutputFile *fo);
-    virtual void uiUnpackEnd(const OutputFile *fo);
+    virtual void uiPackStart(const UPXOutputFile *fo);
+    virtual void uiPackEnd(const UPXOutputFile *fo);
+    virtual void uiUnpackStart(const UPXOutputFile *fo);
+    virtual void uiUnpackEnd(const UPXOutputFile *fo);
     virtual void uiListStart();
     virtual void uiList();
     virtual void uiListEnd();

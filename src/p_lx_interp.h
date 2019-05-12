@@ -42,7 +42,7 @@ class PackLinuxElf32x86interp : public PackLinuxElf32x86
 {
     typedef PackLinuxElf32x86 super;
 public:
-    PackLinuxElf32x86interp(InputFile *f);
+    PackLinuxElf32x86interp(UPXInputFile *f);
     virtual ~PackLinuxElf32x86interp();
     virtual int getVersion() const { return 13; }
     virtual int getFormat() const { return UPX_F_LINUX_ELFI_i386; }
@@ -50,12 +50,12 @@ public:
     virtual const char *getFullName(const options_t *) const { return "i386-linux.elf.interp"; }
 
     virtual bool canPack();
-    virtual void unpack(OutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
-    virtual int  pack2(OutputFile *, Filter &);  // append compressed data
-    virtual off_t pack3(OutputFile *, Filter &);  // build loader
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
+    virtual int  pack2(UPXOutputFile *, Filter &);  // append compressed data
+    virtual off_t pack3(UPXOutputFile *, Filter &);  // build loader
 };
 
 

@@ -1,0 +1,34 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+{% for proj_name, proj_guid in projects -%}
+Project("{{ solution_guid }}") = "{{proj_name}}", "{{proj_name}}.vcxproj", "{{proj_guid}}"
+EndProject
+{% endfor %}
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {% for proj_name, proj_guid in projects -%}
+		{{ proj_guid }}.Debug|x64.ActiveCfg = Debug|x64
+		{{ proj_guid }}.Debug|x64.Build.0 = Debug|x64
+		{{ proj_guid }}.Debug|x86.ActiveCfg = Debug|Win32
+		{{ proj_guid }}.Debug|x86.Build.0 = Debug|Win32
+		{{ proj_guid }}.Release|x64.ActiveCfg = Release|x64
+		{{ proj_guid }}.Release|x64.Build.0 = Release|x64
+		{{ proj_guid }}.Release|x86.ActiveCfg = Release|Win32
+		{{ proj_guid }}.Release|x86.Build.0 = Release|Win32
+        {% endfor %}
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {{'{4D7DD85E-B47F-45DB-8A13-0B020B7A7B3A}'}}
+	EndGlobalSection
+EndGlobal

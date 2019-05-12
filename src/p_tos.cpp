@@ -46,7 +46,7 @@ static const
 
 #define FH_SIZE         sizeof(tos_header_t)
 
-PackTos::PackTos(InputFile *f) :
+PackTos::PackTos(UPXInputFile *f) :
     super(f)
 {
     bele = &N_BELE_RTP::be_policy;
@@ -408,7 +408,7 @@ void PackTos::fileInfo()
 //
 **************************************************************************/
 
-void PackTos::pack(OutputFile *fo)
+void PackTos::pack(UPXOutputFile *fo)
 {
     unsigned t;
     unsigned nrelocs = 0;
@@ -703,7 +703,7 @@ void PackTos::pack(OutputFile *fo)
     fo->write(&oh, FH_SIZE);
     fo->write(loader, o_text);  // entry
     if (opt->debug.dump_stub_loader)
-        OutputFile::dump(opt->debug.dump_stub_loader, loader, o_text);
+        UPXOutputFile::dump(opt->debug.dump_stub_loader, loader, o_text);
     memcpy(obuf + d_off, getLoader() + e_len, d_len); // copy decompressor
     fo->write(obuf, o_data);    // compressed + decompressor
 
@@ -747,7 +747,7 @@ int PackTos::canUnpack()
 //
 **************************************************************************/
 
-void PackTos::unpack(OutputFile *fo)
+void PackTos::unpack(UPXOutputFile *fo)
 {
     ibuf.alloc(ph.c_len);
     obuf.allocForUncompression(ph.u_len);

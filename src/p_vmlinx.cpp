@@ -55,7 +55,7 @@ static const
 **************************************************************************/
 
 template <class T>
-PackVmlinuxBase<T>::PackVmlinuxBase(InputFile *f,
+PackVmlinuxBase<T>::PackVmlinuxBase(UPXInputFile *f,
                                     unsigned e_machine, unsigned elfclass, unsigned elfdata,
                                     char const *const boot_label) :
     super(f),
@@ -210,7 +210,7 @@ bool PackVmlinuxBase<T>::canPack()
 #include "p_elf.h"
 
 template <class T>
-void PackVmlinuxBase<T>::pack(OutputFile *fo)
+void PackVmlinuxBase<T>::pack(UPXOutputFile *fo)
 {
     unsigned fo_off = 0;
     Ehdr ehdro;
@@ -606,7 +606,7 @@ int PackVmlinuxBase<T>::canUnpack()
 }
 
 template <class T>
-void PackVmlinuxBase<T>::unpack(OutputFile *fo)
+void PackVmlinuxBase<T>::unpack(UPXOutputFile *fo)
 {
     TE32 word;
     PackHeader const ph_tmp(ph);
@@ -958,7 +958,7 @@ static const
 #include "stub/powerpc-linux.kernel.vmlinux-head.h"
 
 unsigned PackVmlinuxI386::write_vmlinux_head(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     Shdr *stxt
 )
 {
@@ -973,7 +973,7 @@ unsigned PackVmlinuxI386::write_vmlinux_head(
 }
 
 unsigned PackVmlinuxAMD64::write_vmlinux_head(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     Shdr *stxt
 )
 {
@@ -1039,7 +1039,7 @@ void PackVmlinuxAMD64::defineDecompressorSymbols()
 }
 
 unsigned PackVmlinuxARMEL::write_vmlinux_head(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     Shdr *stxt
 )
 {
@@ -1061,7 +1061,7 @@ unsigned PackVmlinuxARMEL::write_vmlinux_head(
 }
 
 unsigned PackVmlinuxARMEB::write_vmlinux_head(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     Shdr *stxt
 )
 {
@@ -1083,7 +1083,7 @@ unsigned PackVmlinuxARMEB::write_vmlinux_head(
 }
 
 unsigned PackVmlinuxPPC32::write_vmlinux_head(
-    OutputFile * /*fo*/,
+    UPXOutputFile * /*fo*/,
     Shdr * /*stxt*/
 )
 {
@@ -1091,7 +1091,7 @@ unsigned PackVmlinuxPPC32::write_vmlinux_head(
 }
 
 unsigned PackVmlinuxPPC64LE::write_vmlinux_head(
-    OutputFile * /*const fo*/,
+    UPXOutputFile * /*const fo*/,
     Shdr * /*const stxt*/
 )
 {

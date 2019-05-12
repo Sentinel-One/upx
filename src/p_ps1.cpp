@@ -76,7 +76,7 @@ static const
 //          optional: not aligned to 2048 (for console run only)
 **************************************************************************/
 
-PackPs1::PackPs1(InputFile *f) :
+PackPs1::PackPs1(UPXInputFile *f) :
     super(f),
     isCon(!opt->ps1_exe.boot_only), is32Bit(!opt->ps1_exe.do_8bit),
     buildPart2(0), foundBss(0), sa_cnt(0), overlap(0), sz_lunc(0), sz_lcpr(0),
@@ -473,7 +473,7 @@ bool PackPs1::findBssSection()
 //
 **************************************************************************/
 
-void PackPs1::pack(OutputFile *fo)
+void PackPs1::pack(UPXOutputFile *fo)
 {
     ibuf.alloc(fdata_size);
     obuf.allocForCompression(fdata_size);
@@ -705,7 +705,7 @@ int PackPs1::canUnpack()
 //
 **************************************************************************/
 
-void PackPs1::unpack(OutputFile *fo)
+void PackPs1::unpack(UPXOutputFile *fo)
 {
     // restore orig exec hdr
     memcpy(&oh, &ih, sizeof(ih));

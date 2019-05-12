@@ -44,7 +44,7 @@ int compress_ucl_dummy = 0;
 #if (ACC_CFG_NO_UNALIGNED)
 #  undef UCL_USE_ASM
 #endif
-#if 1 && (UCL_USE_ASM)
+#if 0 && (UCL_USE_ASM)
 #  include <ucl/ucl_asm.h>
 #  define ucl_nrv2b_decompress_safe_8       ucl_nrv2b_decompress_asm_safe_8
 #  define ucl_nrv2b_decompress_safe_le16    ucl_nrv2b_decompress_asm_safe_le16

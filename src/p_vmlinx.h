@@ -57,7 +57,7 @@ protected:
     typedef typename ElfClass::Sym  Sym;
 
 public:
-    PackVmlinuxBase(InputFile *, unsigned, unsigned, unsigned, char const *);
+    PackVmlinuxBase(UPXInputFile *, unsigned, unsigned, unsigned, char const *);
     virtual ~PackVmlinuxBase();
     virtual int getVersion() const { return 13; }
 
@@ -83,11 +83,11 @@ protected:
     virtual bool is_valid_e_entry(Addr) = 0;
     virtual bool has_valid_vmlinux_head() = 0;
     virtual bool canPack();
-    virtual void pack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
     virtual int canUnpack();  // bool, except -1: format known, but not packed
-    virtual void unpack(OutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
     virtual unsigned write_vmlinux_head(
-        OutputFile *fo,
+        UPXOutputFile *fo,
         Shdr *stxt
     ) = 0;
     static int __acc_cdecl_qsort compare_Phdr(void const *aa, void const *bb);
@@ -98,7 +98,7 @@ class PackVmlinuxI386 : public PackVmlinuxBase<ElfClass_LE32>
 {
     typedef PackVmlinuxBase<ElfClass_LE32> super;
 public:
-    PackVmlinuxI386(InputFile *f) : super(f, Ehdr::EM_386,
+    PackVmlinuxI386(UPXInputFile *f) : super(f, Ehdr::EM_386,
         Ehdr::ELFCLASS32, Ehdr::ELFDATA2LSB, "startup_32") { }
     virtual int getFormat() const { return UPX_F_VMLINUX_i386; }
     virtual const char *getName() const { return "vmlinux/i386"; }
@@ -113,7 +113,7 @@ protected:
     virtual bool is_valid_e_entry(Addr);
     virtual bool has_valid_vmlinux_head();
     virtual unsigned write_vmlinux_head(
-        OutputFile *fo,
+        UPXOutputFile *fo,
         Shdr *stxt
     );
 };
@@ -123,7 +123,7 @@ class PackVmlinuxARMEL : public PackVmlinuxBase<ElfClass_LE32>
 {
     typedef PackVmlinuxBase<ElfClass_LE32> super;
 public:
-    PackVmlinuxARMEL(InputFile *f) : super(f, Ehdr::EM_ARM,
+    PackVmlinuxARMEL(UPXInputFile *f) : super(f, Ehdr::EM_ARM,
         Ehdr::ELFCLASS32, Ehdr::ELFDATA2LSB, "decompress_kernel") { }
     virtual int getFormat() const { return UPX_F_VMLINUX_ARMEL; }
     virtual const char *getName() const { return "vmlinux/arm"; }
@@ -138,7 +138,7 @@ protected:
     virtual bool is_valid_e_entry(Addr);
     virtual bool has_valid_vmlinux_head();
     virtual unsigned write_vmlinux_head(
-        OutputFile *fo,
+        UPXOutputFile *fo,
         Shdr *stxt
     );
 };
@@ -147,7 +147,7 @@ class PackVmlinuxARMEB : public PackVmlinuxBase<ElfClass_BE32>
 {
     typedef PackVmlinuxBase<ElfClass_BE32> super;
 public:
-    PackVmlinuxARMEB(InputFile *f) : super(f, Ehdr::EM_ARM,
+    PackVmlinuxARMEB(UPXInputFile *f) : super(f, Ehdr::EM_ARM,
         Ehdr::ELFCLASS32, Ehdr::ELFDATA2MSB, "decompress_kernel") { }
     virtual int getFormat() const { return UPX_F_VMLINUX_ARMEB; }
     virtual const char *getName() const { return "vmlinux/armeb"; }
@@ -162,7 +162,7 @@ protected:
     virtual bool is_valid_e_entry(Addr);
     virtual bool has_valid_vmlinux_head();
     virtual unsigned write_vmlinux_head(
-        OutputFile *fo,
+        UPXOutputFile *fo,
         Shdr *stxt
     );
 };
@@ -171,7 +171,7 @@ class PackVmlinuxPPC32 : public PackVmlinuxBase<ElfClass_BE32>
 {
     typedef PackVmlinuxBase<ElfClass_BE32> super;
 public:
-    PackVmlinuxPPC32(InputFile *f) : super(f, Ehdr::EM_PPC,
+    PackVmlinuxPPC32(UPXInputFile *f) : super(f, Ehdr::EM_PPC,
         Ehdr::ELFCLASS32, Ehdr::ELFDATA2MSB, "_vmlinux_start") { }
     virtual int getFormat() const { return UPX_F_VMLINUX_PPC32; }
     virtual const char *getName() const { return "vmlinux/ppc32"; }
@@ -186,7 +186,7 @@ protected:
     virtual bool is_valid_e_entry(Addr);
     virtual bool has_valid_vmlinux_head();
     virtual unsigned write_vmlinux_head(
-        OutputFile *fo,
+        UPXOutputFile *fo,
         Shdr *stxt
     );
 };
@@ -195,7 +195,7 @@ class PackVmlinuxPPC64LE : public PackVmlinuxBase<ElfClass_LE64>
 {
     typedef PackVmlinuxBase<ElfClass_LE64> super;
 public:
-    PackVmlinuxPPC64LE(InputFile *f) : super(f, Ehdr::EM_PPC64,
+    PackVmlinuxPPC64LE(UPXInputFile *f) : super(f, Ehdr::EM_PPC64,
         Ehdr::ELFCLASS64, Ehdr::ELFDATA2LSB, "_vmlinux_start") { }
     virtual int getFormat() const { return UPX_F_VMLINUX_PPC64LE; }
     virtual const char *getName() const { return "vmlinux/ppc64le"; }
@@ -210,7 +210,7 @@ protected:
     virtual bool is_valid_e_entry(Addr);
     virtual bool has_valid_vmlinux_head();
     virtual unsigned write_vmlinux_head(
-        OutputFile *fo,
+        UPXOutputFile *fo,
         Shdr *stxt
     );
 };
@@ -220,7 +220,7 @@ class PackVmlinuxAMD64 : public PackVmlinuxBase<ElfClass_LE64>
 {
     typedef PackVmlinuxBase<ElfClass_LE64> super;
 public:
-    PackVmlinuxAMD64(InputFile *f) : super(f, Ehdr::EM_X86_64,
+    PackVmlinuxAMD64(UPXInputFile *f) : super(f, Ehdr::EM_X86_64,
         Ehdr::ELFCLASS64, Ehdr::ELFDATA2LSB, "startup_32") { }
     virtual int getFormat() const { return UPX_F_VMLINUX_AMD64; }
     virtual const char *getName() const { return "vmlinux/amd64"; }
@@ -235,7 +235,7 @@ protected:
     virtual bool is_valid_e_entry(Addr);
     virtual bool has_valid_vmlinux_head();
     virtual unsigned write_vmlinux_head(
-        OutputFile *fo,
+        UPXOutputFile *fo,
         Shdr *stxt
     );
 };

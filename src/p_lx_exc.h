@@ -41,9 +41,9 @@ class PackLinuxI386 : public PackUnixLe32
 {
     typedef PackUnixLe32 super;
 public:
-    PackLinuxI386(InputFile *f);
+    PackLinuxI386(UPXInputFile *f);
     virtual void generateElfHdr(
-        OutputFile *,
+        UPXOutputFile *,
         void const *proto,
         unsigned const brka
     );
@@ -57,10 +57,10 @@ public:
     virtual bool canPack();
 
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
     // virtual void pack2(OutputFile *, Filter &);  // append compressed data
     // virtual void pack3(OutputFile *, Filter &);  // append loader
-    virtual void pack4(OutputFile *, Filter &);  // append PackHeader
+    virtual void pack4(UPXOutputFile *, Filter &);  // append PackHeader
 
     // loader util
     virtual Linker* newLinker() const;
@@ -76,7 +76,7 @@ protected:
     // patch util
     virtual void patchLoader();
     virtual void patchLoaderChecksum();
-    virtual void updateLoader(OutputFile *);
+    virtual void updateLoader(UPXOutputFile *);
 
     // ELF util
     virtual int checkEhdr(const Elf_LE32_Ehdr *ehdr) const;
@@ -133,13 +133,13 @@ class PackBSDI386 : public PackLinuxI386
 {
     typedef PackLinuxI386 super;
 public:
-    PackBSDI386(InputFile *f);
+    PackBSDI386(UPXInputFile *f);
     virtual int getFormat() const { return UPX_F_BSD_i386; }
     virtual const char *getName() const { return "bsd.exec/i386"; }
     virtual const char *getFullName(const options_t *) const { return "i386-bsd.elf.execve"; }
 
 protected:
-    virtual void pack1(OutputFile *, Filter &);  // generate executable header
+    virtual void pack1(UPXOutputFile *, Filter &);  // generate executable header
 
     virtual void buildLoader(const Filter *);
 };

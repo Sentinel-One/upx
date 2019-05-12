@@ -43,7 +43,7 @@ static const
 //
 **************************************************************************/
 
-PackDjgpp2::PackDjgpp2(InputFile *f) :
+PackDjgpp2::PackDjgpp2(UPXInputFile *f) :
     super(f), coff_offset(0)
 {
     bele = &N_BELE_RTP::le_policy;
@@ -119,7 +119,7 @@ void PackDjgpp2::buildLoader(const Filter *ft)
 // util
 **************************************************************************/
 
-void PackDjgpp2::handleStub(OutputFile *fo)
+void PackDjgpp2::handleStub(UPXOutputFile *fo)
 {
     if (fo && !opt->djgpp2_coff.coff)
     {
@@ -138,7 +138,7 @@ void PackDjgpp2::handleStub(OutputFile *fo)
 }
 
 
-static bool is_dlm(InputFile *fi, unsigned coff_offset)
+static bool is_dlm(UPXInputFile *fi, unsigned coff_offset)
 {
     unsigned char buf[4];
     unsigned off;
@@ -159,7 +159,7 @@ static bool is_dlm(InputFile *fi, unsigned coff_offset)
 }
 
 
-static void handle_allegropak(InputFile *fi, OutputFile *fo)
+static void handle_allegropak(UPXInputFile *fi, UPXOutputFile *fo)
 {
     unsigned char buf[0x4000];
     int pfsize = 0;
@@ -271,7 +271,7 @@ bool PackDjgpp2::canPack()
 //
 **************************************************************************/
 
-void PackDjgpp2::pack(OutputFile *fo)
+void PackDjgpp2::pack(UPXOutputFile *fo)
 {
     handleStub(fo);
 
@@ -358,7 +358,7 @@ void PackDjgpp2::pack(OutputFile *fo)
     fo->write(&coff_hdr, sizeof(coff_hdr));
     fo->write(loader, lsize);
     if (opt->debug.dump_stub_loader)
-        OutputFile::dump(opt->debug.dump_stub_loader, loader, lsize);
+        UPXOutputFile::dump(opt->debug.dump_stub_loader, loader, lsize);
     fo->write(obuf, data->size);
 #if 0
     printf("%-13s: coff hdr   : %8ld bytes\n", getName(), (long) sizeof(coff_hdr));
@@ -398,7 +398,7 @@ int PackDjgpp2::canUnpack()
 //
 **************************************************************************/
 
-void PackDjgpp2::unpack(OutputFile *fo)
+void PackDjgpp2::unpack(UPXOutputFile *fo)
 {
     handleStub(fo);
 

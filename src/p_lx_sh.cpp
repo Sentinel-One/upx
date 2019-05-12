@@ -53,7 +53,7 @@ static const
 #include "stub/i386-linux.elf.shell-fold.h"
 
 
-PackLinuxI386sh::PackLinuxI386sh(InputFile *f) :
+PackLinuxI386sh::PackLinuxI386sh(UPXInputFile *f) :
     super(f), o_shname(0), l_shname(0)
 {
 }
@@ -156,13 +156,13 @@ bool PackLinuxI386sh::canPack()
 
 
 void
-PackLinuxI386sh::pack1(OutputFile *fo, Filter &)
+PackLinuxI386sh::pack1(UPXOutputFile *fo, Filter &)
 {
     generateElfHdr(fo, stub_i386_linux_elf_shell_fold, 0x08048000);
 }
 
 off_t
-PackLinuxI386sh::pack3(OutputFile *fo, Filter &ft)
+PackLinuxI386sh::pack3(UPXOutputFile *fo, Filter &ft)
 {
     return elfout.phdr[0].p_filesz = super::pack3(fo,ft);
 }

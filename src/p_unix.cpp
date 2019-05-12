@@ -46,7 +46,7 @@
 //
 **************************************************************************/
 
-PackUnix::PackUnix(InputFile *f) :
+PackUnix::PackUnix(UPXInputFile *f) :
     super(f), exetype(0), blocksize(0), overlay_offset(0), lsize(0)
 {
     COMPILE_TIME_ASSERT(sizeof(Elf32_Ehdr) == 52);
@@ -81,7 +81,7 @@ bool PackUnix::canPack()
 }
 
 
-void PackUnix::writePackHeader(OutputFile *fo)
+void PackUnix::writePackHeader(UPXOutputFile *fo)
 {
     unsigned char buf[32];
     memset(buf, 0, sizeof(buf));
@@ -119,7 +119,7 @@ bool PackUnix::checkCompressionRatio(unsigned, unsigned) const
     return true;
 }
 
-void PackUnix::pack1(OutputFile * /*fo*/, Filter & /*ft*/)
+void PackUnix::pack1(UPXOutputFile * /*fo*/, Filter & /*ft*/)
 {
     // derived class usually provides this
 }
@@ -134,7 +134,7 @@ int PackUnix::getStrategy(Filter &/*ft*/)
     return (opt->no_filter ? -3 : ((opt->filter > 0) ? -2 : 2));
 }
 
-int PackUnix::pack2(OutputFile *fo, Filter &ft)
+int PackUnix::pack2(UPXOutputFile *fo, Filter &ft)
 {
     // compress blocks
     unsigned total_in = 0;
@@ -246,7 +246,7 @@ PackUnix::patchLoaderChecksum()
     set_te32(&lp->l_checksum, upx_adler32(ptr, lsize));
 }
 
-off_t PackUnix::pack3(OutputFile *fo, Filter &ft)
+off_t PackUnix::pack3(UPXOutputFile *fo, Filter &ft)
 {
     if (0==linker) {
         // If no filter, then linker is not constructed by side effect
@@ -262,7 +262,7 @@ off_t PackUnix::pack3(OutputFile *fo, Filter &ft)
     return fo->getBytesWritten();
 }
 
-void PackUnix::pack4(OutputFile *fo, Filter &)
+void PackUnix::pack4(UPXOutputFile *fo, Filter &)
 {
     writePackHeader(fo);
 
@@ -271,7 +271,7 @@ void PackUnix::pack4(OutputFile *fo, Filter &)
     fo->write(&tmp, sizeof(tmp));
 }
 
-void PackUnix::pack(OutputFile *fo)
+void PackUnix::pack(UPXOutputFile *fo)
 {
     Filter ft(ph.level);
     ft.addvalue = 0;
@@ -321,7 +321,7 @@ void PackUnix::packExtent(
     unsigned &total_in,
     unsigned &total_out,
     Filter *ft,
-    OutputFile *fo,
+    UPXOutputFile *fo,
     unsigned hdr_u_len
 )
 {
@@ -446,7 +446,7 @@ void PackUnix::packExtent(
     }
 }
 
-void PackUnix::unpackExtent(unsigned wanted, OutputFile *fo,
+void PackUnix::unpackExtent(unsigned wanted, UPXOutputFile *fo,
     unsigned &total_in, unsigned &total_out,
     unsigned &c_adler, unsigned &u_adler,
     bool first_PF_X, unsigned szb_info, bool is_rewrite
@@ -556,7 +556,7 @@ int PackUnix::canUnpack()
 // See notes there.
 **************************************************************************/
 
-void PackUnix::unpack(OutputFile *fo)
+void PackUnix::unpack(UPXOutputFile *fo)
 {
     b_info bhdr;
     unsigned const szb_info = (ph.version <= 11)

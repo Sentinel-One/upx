@@ -35,7 +35,7 @@
 //
 **************************************************************************/
 
-void File::chmod(const char *name, int mode)
+void UPXFile::chmod(const char *name, int mode)
 {
 #if (HAVE_CHMOD)
     if (::chmod(name,mode) != 0)
@@ -46,7 +46,7 @@ void File::chmod(const char *name, int mode)
 }
 
 
-void File::rename(const char *old_, const char *new_)
+void UPXFile::rename(const char *old_, const char *new_)
 {
 #if (ACC_OS_DOS32) && defined(__DJGPP__)
     if (::_rename(old_,new_) != 0)
@@ -57,7 +57,7 @@ void File::rename(const char *old_, const char *new_)
 }
 
 
-void File::unlink(const char *name)
+void UPXFile::unlink(const char *name)
 {
     if (::unlink(name) != 0)
         throwIOException(name,errno);
@@ -68,14 +68,14 @@ void File::unlink(const char *name)
 //
 **************************************************************************/
 
-FileBase::FileBase() :
+UPXFileBase::UPXFileBase() :
     _fd(-1), _flags(0), _shflags(0), _mode(0), _name(NULL), _offset(0), _length(0)
 {
     memset(&st,0,sizeof(st));
 }
 
 
-FileBase::~FileBase()
+UPXFileBase::~UPXFileBase()
 {
 #if 0 && defined(__GNUC__)    // debug
     if (isOpen())
@@ -88,7 +88,7 @@ FileBase::~FileBase()
 }
 
 
-bool FileBase::do_sopen()
+bool UPXFileBase::do_sopen()
 {
     if (_shflags < 0)
         _fd = ::open(_name, _flags, _mode);
@@ -113,7 +113,7 @@ bool FileBase::do_sopen()
 }
 
 
-bool FileBase::close()
+bool UPXFileBase::close()
 {
     bool ok = true;
     if (isOpen() && _fd != STDIN_FILENO && _fd != STDOUT_FILENO && _fd != STDERR_FILENO)
@@ -129,14 +129,14 @@ bool FileBase::close()
 }
 
 
-void FileBase::closex()
+void UPXFileBase::closex()
 {
     if (!close())
         throwIOException("close failed",errno);
 }
 
 
-int FileBase::read(void *buf, int len)
+int UPXFileBase::read(void *buf, int len)
 {
     if (!isOpen() || len < 0)
         throwIOException("bad read");
@@ -149,7 +149,7 @@ int FileBase::read(void *buf, int len)
 }
 
 
-int FileBase::readx(void *buf, int len)
+int UPXFileBase::readx(void *buf, int len)
 {
     int l = this->read(buf, len);
     if (l != len)
@@ -158,7 +158,7 @@ int FileBase::readx(void *buf, int len)
 }
 
 
-void FileBase::write(const void *buf, int len)
+void UPXFileBase::write(const void *buf, int len)
 {
     if (!isOpen() || len < 0)
         throwIOException("bad write");
@@ -170,7 +170,7 @@ void FileBase::write(const void *buf, int len)
 }
 
 
-off_t FileBase::seek(upx_int64_t off64, int whence)
+off_t UPXFileBase::seek(upx_int64_t off64, int whence)
 {
     mem_size_assert(1, off64 >= 0 ? off64 : -off64); // sanity check
     off_t off = ACC_ICONV(off_t, off64);
@@ -193,7 +193,7 @@ off_t FileBase::seek(upx_int64_t off64, int whence)
 }
 
 
-off_t FileBase::tell() const
+off_t UPXFileBase::tell() const
 {
     if (!isOpen())
         throwIOException("bad tell");
@@ -204,13 +204,13 @@ off_t FileBase::tell() const
 }
 
 
-void FileBase::set_extent(off_t offset, off_t length)
+void UPXFileBase::set_extent(off_t offset, off_t length)
 {
     _offset = offset;
     _length = length;
 }
 
-off_t FileBase::st_size() const
+off_t UPXFileBase::st_size() const
 {
     return _length;
 }
@@ -220,17 +220,17 @@ off_t FileBase::st_size() const
 //
 **************************************************************************/
 
-InputFile::InputFile()
+UPXInputFile::UPXInputFile()
 {
 }
 
 
-InputFile::~InputFile()
+UPXInputFile::~UPXInputFile()
 {
 }
 
 
-void InputFile::sopen(const char *name, int flags, int shflags)
+void UPXInputFile::sopen(const char *name, int flags, int shflags)
 {
     close();
     _name = name;
@@ -239,7 +239,7 @@ void InputFile::sopen(const char *name, int flags, int shflags)
     _mode = 0;
     _offset = 0;
     _length = 0;
-    if (!FileBase::do_sopen())
+    if (!UPXFileBase::do_sopen())
     {
         if (errno == ENOENT)
             throw FileNotFoundException(_name, errno);
@@ -252,25 +252,25 @@ void InputFile::sopen(const char *name, int flags, int shflags)
 }
 
 
-int InputFile::read(void *buf, int len)
+int UPXInputFile::read(void *buf, int len)
 {
     return super::read(buf, len);
 }
 
-int InputFile::readx(void *buf, int len)
+int UPXInputFile::readx(void *buf, int len)
 {
     return super::readx(buf, len);
 }
 
 
-int InputFile::read(MemBuffer *buf, int len)
+int UPXInputFile::read(MemBuffer *buf, int len)
 {
     buf->checkState();
     assert((unsigned)len <= buf->getSize());
     return read(buf->getVoidPtr(), len);
 }
 
-int InputFile::readx(MemBuffer *buf, int len)
+int UPXInputFile::readx(MemBuffer *buf, int len)
 {
     buf->checkState();
     assert((unsigned)len <= buf->getSize());
@@ -278,18 +278,18 @@ int InputFile::readx(MemBuffer *buf, int len)
 }
 
 
-int InputFile::read(MemBuffer &buf, int len)
+int UPXInputFile::read(MemBuffer &buf, int len)
 {
     return read(&buf, len);
 }
 
-int InputFile::readx(MemBuffer &buf, int len)
+int UPXInputFile::readx(MemBuffer &buf, int len)
 {
     return readx(&buf, len);
 }
 
 
-off_t InputFile::seek(upx_int64_t off64, int whence)
+off_t UPXInputFile::seek(upx_int64_t off64, int whence)
 {
     off_t pos = super::seek(off64, whence);
     if (_length < pos)
@@ -298,12 +298,12 @@ off_t InputFile::seek(upx_int64_t off64, int whence)
 }
 
 
-off_t InputFile::tell() const
+off_t UPXInputFile::tell() const
 {
     return super::tell();
 }
 
-off_t InputFile::st_size_orig() const
+off_t UPXInputFile::st_size_orig() const
 {
     return _length_orig;
 }
@@ -312,18 +312,18 @@ off_t InputFile::st_size_orig() const
 //
 **************************************************************************/
 
-OutputFile::OutputFile() :
+UPXOutputFile::UPXOutputFile() :
     bytes_written(0)
 {
 }
 
 
-OutputFile::~OutputFile()
+UPXOutputFile::~UPXOutputFile()
 {
 }
 
 
-void OutputFile::sopen(const char *name, int flags, int shflags, int mode)
+void UPXOutputFile::sopen(const char *name, int flags, int shflags, int mode)
 {
     close();
     _name = name;
@@ -332,7 +332,7 @@ void OutputFile::sopen(const char *name, int flags, int shflags, int mode)
     _mode = mode;
     _offset = 0;
     _length = 0;
-    if (!FileBase::do_sopen())
+    if (!UPXFileBase::do_sopen())
     {
 #if 0
         // don't throw FileNotFound here -- this is confusing
@@ -348,7 +348,7 @@ void OutputFile::sopen(const char *name, int flags, int shflags, int mode)
 }
 
 
-bool OutputFile::openStdout(int flags, bool force)
+bool UPXOutputFile::openStdout(int flags, bool force)
 {
     close();
     int fd = STDOUT_FILENO;
@@ -367,13 +367,13 @@ bool OutputFile::openStdout(int flags, bool force)
 }
 
 
-void OutputFile::write(const void *buf, int len)
+void UPXOutputFile::write(const void *buf, int len)
 {
     super::write(buf, len);
     bytes_written += len;
 }
 
-off_t OutputFile::st_size() const
+off_t UPXOutputFile::st_size() const
 {
     if (opt->to_stdout) {  // might be a pipe ==> .st_size is invalid
         return bytes_written;  // too big if seek()+write() instead of rewrite()
@@ -386,7 +386,7 @@ off_t OutputFile::st_size() const
 }
 
 
-void OutputFile::write(const MemBuffer *buf, int len)
+void UPXOutputFile::write(const MemBuffer *buf, int len)
 {
     buf->checkState();
     assert((unsigned)len <= buf->getSize());
@@ -394,19 +394,19 @@ void OutputFile::write(const MemBuffer *buf, int len)
 }
 
 
-void OutputFile::write(const MemBuffer &buf, int len)
+void UPXOutputFile::write(const MemBuffer &buf, int len)
 {
     write(&buf, len);
 }
 
-void OutputFile::rewrite(const void *buf, int len)
+void UPXOutputFile::rewrite(const void *buf, int len)
 {
     assert(!opt->to_stdout);
     write(buf, len);
     bytes_written -= len;       // restore
 }
 
-off_t OutputFile::seek(upx_int64_t off64, int whence)
+off_t UPXOutputFile::seek(upx_int64_t off64, int whence)
 {
     mem_size_assert(1, off64 >= 0 ? off64 : -off64); // sanity check
     off_t off = ACC_ICONV(off_t, off64);
@@ -436,7 +436,7 @@ off_t OutputFile::seek(upx_int64_t off64, int whence)
 //    return infile.read(buf, len);
 //}
 
-void OutputFile::set_extent(off_t offset, off_t length)
+void UPXOutputFile::set_extent(off_t offset, off_t length)
 {
     super::set_extent(offset, length);
     bytes_written = 0;
@@ -447,7 +447,7 @@ void OutputFile::set_extent(off_t offset, off_t length)
     }
 }
 
-off_t OutputFile::unset_extent()
+off_t UPXOutputFile::unset_extent()
 {
     off_t l = ::lseek(_fd, 0, SEEK_END);
     if (l < 0)
@@ -458,12 +458,12 @@ off_t OutputFile::unset_extent()
     return _length;
 }
 
-void OutputFile::dump(const char *name, const void *buf, int len, int flags)
+void UPXOutputFile::dump(const char *name, const void *buf, int len, int flags)
 {
     if (flags < 0)
          flags = O_CREAT | O_TRUNC;
     flags |= O_WRONLY | O_BINARY;
-    OutputFile f;
+    UPXOutputFile f;
     f.open(name, flags, 0600);
     f.write(buf, len);
     f.closex();

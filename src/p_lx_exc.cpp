@@ -54,13 +54,13 @@
 // linux/386 (generic "execve" format)
 **************************************************************************/
 
-PackLinuxI386::PackLinuxI386(InputFile *f) : super(f),
+PackLinuxI386::PackLinuxI386(UPXInputFile *f) : super(f),
     ei_osabi(Elf32_Ehdr::ELFOSABI_LINUX), osabi_note(NULL)
 {
     bele = &N_BELE_RTP::le_policy;
 }
 
-PackBSDI386::PackBSDI386(InputFile *f) : super(f)
+PackBSDI386::PackBSDI386(UPXInputFile *f) : super(f)
 {
     // Shell scripts need help specifying the target operating system.
     // Elf input will override this with .e_ident[EI_OSABI] or PT_NOTE.
@@ -127,7 +127,7 @@ set_stub_brk(Elf_LE32_Phdr *const phdr1, unsigned brka)
 
 void
 PackLinuxI386::generateElfHdr(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     void const *proto,
     unsigned const brka
 )
@@ -178,7 +178,7 @@ PackLinuxI386::generateElfHdr(
 }
 
 void
-PackLinuxI386::pack1(OutputFile *fo, Filter &)
+PackLinuxI386::pack1(UPXOutputFile *fo, Filter &)
 {
     // create a pseudo-unique program id for our paranoid stub
     progid = getRandomId();
@@ -187,7 +187,7 @@ PackLinuxI386::pack1(OutputFile *fo, Filter &)
 }
 
 void
-PackBSDI386::pack1(OutputFile *fo, Filter &)
+PackBSDI386::pack1(UPXOutputFile *fo, Filter &)
 {
     // create a pseudo-unique program id for our paranoid stub
     progid = getRandomId();
@@ -196,7 +196,7 @@ PackBSDI386::pack1(OutputFile *fo, Filter &)
 }
 
 void
-PackLinuxI386::pack4(OutputFile *fo, Filter &ft)
+PackLinuxI386::pack4(UPXOutputFile *fo, Filter &ft)
 {
     overlay_offset = sizeof(elfout.ehdr) +
         (elfout.ehdr.e_phentsize * elfout.ehdr.e_phnum) +
@@ -609,7 +609,7 @@ void PackLinuxI386::patchLoaderChecksum()
 }
 
 
-void PackLinuxI386::updateLoader(OutputFile *fo)
+void PackLinuxI386::updateLoader(UPXOutputFile *fo)
 {
     elfout.ehdr.e_entry = fo->getBytesWritten() + elfout.phdr[0].p_vaddr;
 }

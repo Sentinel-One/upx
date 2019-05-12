@@ -43,7 +43,7 @@ static const
 //
 **************************************************************************/
 
-PackArmPe::PackArmPe(InputFile *f) : super(f)
+PackArmPe::PackArmPe(UPXInputFile *f) : super(f)
 {
     use_thumb_stub = false;
 }
@@ -245,7 +245,7 @@ void PackArmPe::setOhHeaderSize(const pe_section_t *osection)
     oh.headersize = osection[1].rawdataptr;
 }
 
-void PackArmPe::pack(OutputFile *fo)
+void PackArmPe::pack(UPXOutputFile *fo)
 {
     super::pack0(fo, 1U << 9, 0x10000, true);
 }

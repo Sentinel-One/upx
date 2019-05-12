@@ -102,7 +102,7 @@ static const unsigned lc_routines[2] = {
 #endif
 
 template <class T>
-PackMachBase<T>::PackMachBase(InputFile *f, unsigned cputype, unsigned filetype,
+PackMachBase<T>::PackMachBase(UPXInputFile *f, unsigned cputype, unsigned filetype,
         unsigned flavor, unsigned count, unsigned size) :
     super(f), my_cputype(cputype), my_filetype(filetype), my_thread_flavor(flavor),
     my_thread_state_word_count(count), my_thread_command_size(size),
@@ -124,21 +124,21 @@ PackMachBase<T>::~PackMachBase()
     delete [] msegcmd;
 }
 
-PackDylibI386::PackDylibI386(InputFile *f) : super(f)
+PackDylibI386::PackDylibI386(UPXInputFile *f) : super(f)
 {
     my_filetype = Mach_header::MH_DYLIB;
 }
 
-PackDylibAMD64::PackDylibAMD64(InputFile *f) : super(f)
+PackDylibAMD64::PackDylibAMD64(UPXInputFile *f) : super(f)
 {
     my_filetype = Mach_header::MH_DYLIB;
 }
 
-PackDylibPPC32::PackDylibPPC32(InputFile *f) : super(f)
+PackDylibPPC32::PackDylibPPC32(UPXInputFile *f) : super(f)
 {
     my_filetype = Mach_header::MH_DYLIB;
 }
-PackDylibPPC64LE::PackDylibPPC64LE(InputFile *f) : super(f)
+PackDylibPPC64LE::PackDylibPPC64LE(UPXInputFile *f) : super(f)
 {
     my_filetype = Mach_header::MH_DYLIB;
 }
@@ -156,12 +156,12 @@ const int *PackMachARMEL::getCompressionMethods(int method, int level) const
     return Packer::getDefaultCompressionMethods_8(method, level);
 }
 
-PackMachPPC32::PackMachPPC32(InputFile *f) : super(f, Mach_header::CPU_TYPE_POWERPC,
+PackMachPPC32::PackMachPPC32(UPXInputFile *f) : super(f, Mach_header::CPU_TYPE_POWERPC,
         Mach_header::MH_EXECUTE, Mach_thread_command::PPC_THREAD_STATE,
         sizeof(Mach_ppc_thread_state)>>2, sizeof(threado))
 { }
 
-PackMachPPC64LE::PackMachPPC64LE(InputFile *f) : super(f, Mach_header::CPU_TYPE_POWERPC64LE,
+PackMachPPC64LE::PackMachPPC64LE(UPXInputFile *f) : super(f, Mach_header::CPU_TYPE_POWERPC64LE,
         Mach_header::MH_EXECUTE, Mach_thread_command::PPC_THREAD_STATE64,
         sizeof(Mach_ppcle_thread_state64)>>2, sizeof(threado))
 { }
@@ -178,7 +178,7 @@ const int *PackMachPPC64LE::getFilters() const
     return filters;
 }
 
-PackMachI386::PackMachI386(InputFile *f) : super(f, Mach_header::CPU_TYPE_I386,
+PackMachI386::PackMachI386(UPXInputFile *f) : super(f, Mach_header::CPU_TYPE_I386,
         Mach_header::MH_EXECUTE, (unsigned)Mach_thread_command::x86_THREAD_STATE32,
         sizeof(Mach_i386_thread_state)>>2, sizeof(threado))
 { }
@@ -189,7 +189,7 @@ int const *PackMachI386::getFilters() const
     return filters;
 }
 
-PackMachAMD64::PackMachAMD64(InputFile *f) : super(f, Mach_header::CPU_TYPE_X86_64,
+PackMachAMD64::PackMachAMD64(UPXInputFile *f) : super(f, Mach_header::CPU_TYPE_X86_64,
         Mach_header::MH_EXECUTE, (unsigned)Mach_thread_command::x86_THREAD_STATE64,
         sizeof(Mach_AMD64_thread_state)>>2, sizeof(threado))
 { }
@@ -200,12 +200,12 @@ int const *PackMachAMD64::getFilters() const
     return filters;
 }
 
-PackMachARMEL::PackMachARMEL(InputFile *f) : super(f, Mach_header::CPU_TYPE_ARM,
+PackMachARMEL::PackMachARMEL(UPXInputFile *f) : super(f, Mach_header::CPU_TYPE_ARM,
         Mach_header::MH_EXECUTE, (unsigned)Mach_thread_command::ARM_THREAD_STATE,
         sizeof(Mach_ARM_thread_state)>>2, sizeof(threado))
 { }
 
-PackMachARM64EL::PackMachARM64EL(InputFile *f) : super(f, Mach_header::CPU_TYPE_ARM64,
+PackMachARM64EL::PackMachARM64EL(UPXInputFile *f) : super(f, Mach_header::CPU_TYPE_ARM64,
         Mach_header::MH_EXECUTE, (unsigned)Mach_thread_command::ARM_THREAD_STATE,
         sizeof(Mach_ARM64_thread_state)>>2, sizeof(threado))
 { }
@@ -488,7 +488,7 @@ template <class T>
 void PackMachBase<T>::patchLoader() { }
 
 template <class T>
-void PackMachBase<T>::updateLoader(OutputFile *) {}
+void PackMachBase<T>::updateLoader(UPXOutputFile *) {}
 
 template <class T>
 void PackMachBase<T>::patchLoaderChecksum()
@@ -554,7 +554,7 @@ PackMachBase<T>::compare_segment_command(void const *const aa, void const *const
 // Note: "readelf --segments"  ==>  "otool -hl" or "otool -hlv" etc. (Xcode on MacOS)
 
 template <class T>
-void PackMachBase<T>::pack4(OutputFile *fo, Filter &ft)  // append PackHeader
+void PackMachBase<T>::pack4(UPXOutputFile *fo, Filter &ft)  // append PackHeader
 {
     // offset of p_info in compressed file
     overlay_offset = secTEXT.addr + sizeof(linfo);
@@ -745,7 +745,7 @@ next:
 
 template <class T>
 void PackMachBase<T>::pack4dylib(  // append PackHeader
-    OutputFile *const fo,
+    UPXOutputFile *const fo,
     Filter &ft,
     Addr init_address
 )
@@ -909,28 +909,28 @@ void PackMachBase<T>::pack4dylib(  // append PackHeader
     PackMachBase<T>::pack4(fo, ft);
 }
 
-void PackDylibI386::pack4(OutputFile *fo, Filter &ft)  // append PackHeader
+void PackDylibI386::pack4(UPXOutputFile *fo, Filter &ft)  // append PackHeader
 {
     pack4dylib(fo, ft, threado.state.eip);
 }
 
-void PackDylibAMD64::pack4(OutputFile *fo, Filter &ft)  // append PackHeader
+void PackDylibAMD64::pack4(UPXOutputFile *fo, Filter &ft)  // append PackHeader
 {
     pack4dylib(fo, ft, threado.state.rip);
 }
 
-void PackDylibPPC32::pack4(OutputFile *fo, Filter &ft)  // append PackHeader
+void PackDylibPPC32::pack4(UPXOutputFile *fo, Filter &ft)  // append PackHeader
 {
     pack4dylib(fo, ft, threado.state.srr0);
 }
 
-void PackDylibPPC64LE::pack4(OutputFile *fo, Filter &ft)  // append PackHeader
+void PackDylibPPC64LE::pack4(UPXOutputFile *fo, Filter &ft)  // append PackHeader
 {
     pack4dylib(fo, ft, threado.state64.srr0);
 }
 
 template <class T>
-off_t PackMachBase<T>::pack3(OutputFile *fo, Filter &ft)  // append loader
+off_t PackMachBase<T>::pack3(UPXOutputFile *fo, Filter &ft)  // append loader
 {
     TE32 disp;
     upx_uint64_t const zero = 0;
@@ -953,7 +953,7 @@ off_t PackMachBase<T>::pack3(OutputFile *fo, Filter &ft)  // append loader
     return super::pack3(fo, ft);
 }
 
-off_t PackDylibI386::pack3(OutputFile *fo, Filter &ft)  // append loader
+off_t PackDylibI386::pack3(UPXOutputFile *fo, Filter &ft)  // append loader
 {
     TE32 disp;
     upx_uint32_t const zero = 0;
@@ -977,7 +977,7 @@ off_t PackDylibI386::pack3(OutputFile *fo, Filter &ft)  // append loader
     return len;
 }
 
-off_t PackDylibAMD64::pack3(OutputFile *fo, Filter &ft)  // append loader
+off_t PackDylibAMD64::pack3(UPXOutputFile *fo, Filter &ft)  // append loader
 {
     TE32 disp;
     upx_uint64_t const zero = 0;
@@ -1001,7 +1001,7 @@ off_t PackDylibAMD64::pack3(OutputFile *fo, Filter &ft)  // append loader
     return len;
 }
 
-off_t PackDylibPPC32::pack3(OutputFile *fo, Filter &ft)  // append loader
+off_t PackDylibPPC32::pack3(UPXOutputFile *fo, Filter &ft)  // append loader
 {
     TE32 disp;
     upx_uint32_t const zero = 0;
@@ -1025,7 +1025,7 @@ off_t PackDylibPPC32::pack3(OutputFile *fo, Filter &ft)  // append loader
     return len;
 }
 
-off_t PackDylibPPC64LE::pack3(OutputFile *fo, Filter &ft)  // append loader
+off_t PackDylibPPC64LE::pack3(UPXOutputFile *fo, Filter &ft)  // append loader
 {
     TE64 disp;
     upx_uint64_t const zero = 0;
@@ -1089,7 +1089,7 @@ unsigned PackMachBase<T>::find_SEGMENT_gap(
 }
 
 template <class T>
-int  PackMachBase<T>::pack2(OutputFile *fo, Filter &ft)  // append compressed body
+int  PackMachBase<T>::pack2(UPXOutputFile *fo, Filter &ft)  // append compressed body
 {
     unsigned const lc_seg = lc_segment[sizeof(Addr)>>3];
     Extent x;
@@ -1172,7 +1172,7 @@ int  PackMachBase<T>::pack2(OutputFile *fo, Filter &ft)  // append compressed bo
     return 1;
 }
 
-void PackMachPPC32::pack1_setup_threado(OutputFile *const fo)
+void PackMachPPC32::pack1_setup_threado(UPXOutputFile *const fo)
 {
     threado.cmd = Mach_command::LC_UNIXTHREAD;
     threado.cmdsize = sizeof(threado);
@@ -1182,7 +1182,7 @@ void PackMachPPC32::pack1_setup_threado(OutputFile *const fo)
     fo->write(&threado, sizeof(threado));
 }
 
-void PackMachPPC64LE::pack1_setup_threado(OutputFile *const fo)
+void PackMachPPC64LE::pack1_setup_threado(UPXOutputFile *const fo)
 {
     threado.cmd = Mach_command::LC_UNIXTHREAD;
     threado.cmdsize = sizeof(threado);
@@ -1192,7 +1192,7 @@ void PackMachPPC64LE::pack1_setup_threado(OutputFile *const fo)
     fo->write(&threado, sizeof(threado));
 }
 
-void PackMachI386::pack1_setup_threado(OutputFile *const fo)
+void PackMachI386::pack1_setup_threado(UPXOutputFile *const fo)
 {
     threado.cmd = Mach_command::LC_UNIXTHREAD;
     threado.cmdsize = sizeof(threado);
@@ -1202,7 +1202,7 @@ void PackMachI386::pack1_setup_threado(OutputFile *const fo)
     fo->write(&threado, sizeof(threado));
 }
 
-void PackMachAMD64::pack1_setup_threado(OutputFile *const fo)
+void PackMachAMD64::pack1_setup_threado(UPXOutputFile *const fo)
 {
     threado.cmd = Mach_command::LC_UNIXTHREAD;
     threado.cmdsize = sizeof(threado);
@@ -1212,7 +1212,7 @@ void PackMachAMD64::pack1_setup_threado(OutputFile *const fo)
     fo->write(&threado, sizeof(threado));
 }
 
-void PackMachARMEL::pack1_setup_threado(OutputFile *const fo)
+void PackMachARMEL::pack1_setup_threado(UPXOutputFile *const fo)
 {
     threado.cmd = Mach_command::LC_UNIXTHREAD;
     threado.cmdsize = sizeof(threado);
@@ -1222,7 +1222,7 @@ void PackMachARMEL::pack1_setup_threado(OutputFile *const fo)
     fo->write(&threado, sizeof(threado));
 }
 
-void PackMachARM64EL::pack1_setup_threado(OutputFile *const fo)
+void PackMachARM64EL::pack1_setup_threado(UPXOutputFile *const fo)
 {
     threado.cmd = Mach_command::LC_UNIXTHREAD;
     threado.cmdsize = sizeof(threado);
@@ -1233,7 +1233,7 @@ void PackMachARM64EL::pack1_setup_threado(OutputFile *const fo)
 }
 
 template <class T>
-void PackMachBase<T>::pack1(OutputFile *const fo, Filter &/*ft*/)  // generate executable header
+void PackMachBase<T>::pack1(UPXOutputFile *const fo, Filter &/*ft*/)  // generate executable header
 {
     unsigned const lc_seg = lc_segment[sizeof(Addr)>>3];
     mhdro = mhdri;
@@ -1418,7 +1418,7 @@ umin(unsigned a, unsigned b)
 }
 
 template <class T>
-void PackMachBase<T>::unpack(OutputFile *fo)
+void PackMachBase<T>::unpack(UPXOutputFile *fo)
 {
     unsigned const lc_seg = lc_segment[sizeof(Addr)>>3];
     fi->seek(0, SEEK_SET);
@@ -2042,7 +2042,7 @@ template class PackMachBase<MachClass_LE32>;
 template class PackMachBase<MachClass_LE64>;
 
 
-PackMachFat::PackMachFat(InputFile *f) : super(f)
+PackMachFat::PackMachFat(UPXInputFile *f) : super(f)
 {
     bele = &N_BELE_RTP::le_policy;  // sham
 }
@@ -2091,7 +2091,7 @@ const int *PackMachFat::getFilters() const
     return filters;  // sham
 }
 
-void PackMachFat::pack(OutputFile *fo)
+void PackMachFat::pack(UPXOutputFile *fo)
 {
     unsigned const in_size = this->file_size;
     fo->write(&fat_head, sizeof(fat_head.fat) +
@@ -2197,7 +2197,7 @@ void PackMachFat::pack(OutputFile *fo)
     fo->set_extent(0, length);
 }
 
-void PackMachFat::unpack(OutputFile *fo)
+void PackMachFat::unpack(UPXOutputFile *fo)
 {
     if (fo) {  // test mode ("-t") sets fo = NULL
         fo->seek(0, SEEK_SET);

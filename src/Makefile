@@ -34,7 +34,55 @@ exeext ?= .out
 libext ?= .a
 objext ?= .o
 
-upx_SOURCES := $(sort $(wildcard $(srcdir)/*.cpp))
+upx_SOURCES := \
+    src/compress.cpp \
+    src/compress_lzma.cpp \
+    src/compress_ucl.cpp \
+    src/compress_zlib.cpp \
+    src/c_file.cpp \
+    src/c_init.cpp \
+    src/c_none.cpp \
+    src/c_screen.cpp \
+    src/except.cpp \
+    src/file.cpp \
+    src/filter.cpp \
+    src/filteri.cpp \
+    src/InMemoryFile.cpp \
+    src/InMemoryUnpackW32Pe.cpp \
+    src/InMemoryUnpackW64Pe.cpp \
+    src/linker.cpp \
+    src/mem.cpp \
+    src/packer.cpp \
+    src/packer_c.cpp \
+    src/packer_f.cpp \
+    src/packhead.cpp \
+    src/packmast.cpp \
+    src/pefile.cpp \
+    src/p_armpe.cpp \
+    src/p_com.cpp \
+    src/p_djgpp2.cpp \
+    src/p_exe.cpp \
+    src/p_lx_elf.cpp \
+    src/p_lx_exc.cpp \
+    src/p_lx_interp.cpp \
+    src/p_lx_sh.cpp \
+    src/p_mach.cpp \
+    src/p_ps1.cpp \
+    src/p_sys.cpp \
+    src/p_tmt.cpp \
+    src/p_tos.cpp \
+    src/p_unix.cpp \
+    src/p_vmlinx.cpp \
+    src/p_vmlinz.cpp \
+    src/p_w32pe.cpp \
+    src/p_w64pep.cpp \
+    src/p_wcle.cpp \
+    src/snprintf.cpp \
+    src/ui.cpp \
+    src/upxlib.cpp \
+    src/util.cpp \
+
+
 upx_OBJECTS := $(notdir $(upx_SOURCES:.cpp=$(objext)))
 
 ifneq ($(wildcard $(top_srcdir)/.git/.),)
@@ -86,9 +134,9 @@ upx$(exeext): $(upx_OBJECTS) $(upx_DEPENDENCIES)
 	$($(notdir $@).PRE_LINK_STEP)
 	$(strip $(CXXLD) $(call ee,CXXFLAGS) $(call ee,LDFLAGS) -o $@ $(upx_OBJECTS) $(call ee,LDADD) $(call ee,LIBS))
 	$($(notdir $@).POST_LINK_STEP)
-	$(CHECK_WHITESPACE)
+	ar rs -o upxlib.a $(upx_OBJECTS)
 
-%.o : %.cpp | ./.depend
+%.o : %.cpp
 	$(strip $(CXX) $(call ee,CPPFLAGS) $(call ee,CXXFLAGS) -o $@ -c $<)
 %.cpp.ii : %.cpp
 	$(strip $(CXX) $(call ee,CPPFLAGS) $(call ee,CXXFLAGS) -o $@ -E $<)
@@ -116,7 +164,7 @@ endif
 mostlyclean clean distclean maintainer-clean:
 	rm -f *.d *.ii *.map *.o *.obj *.res ./.depend upx.exe upx.out upx.ttp upx$(exeext)
 
-./.depend compress_lzma$(objext) : INCLUDES += -I$(UPX_LZMADIR)
+INCLUDES += -I$(UPX_LZMADIR)
 
 compress_lzma$(objext) : CXXFLAGS += -Wno-shadow
 p_mach$(objext)        : CXXFLAGS += -Wno-cast-align

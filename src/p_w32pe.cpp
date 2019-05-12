@@ -41,7 +41,7 @@ static const
 //
 **************************************************************************/
 
-PackW32Pe::PackW32Pe(InputFile *f) : super(f)
+PackW32Pe::PackW32Pe(UPXInputFile *f) : super(f)
 {}
 
 
@@ -281,7 +281,7 @@ void PackW32Pe::setOhHeaderSize(const pe_section_t *)
     oh.headersize = rvamin; // FIXME
 }
 
-void PackW32Pe::pack(OutputFile *fo)
+void PackW32Pe::pack(UPXOutputFile *fo)
 {
     super::pack0(fo, 0x0c, 0x400000, false);
 }

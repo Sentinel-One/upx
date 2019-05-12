@@ -220,8 +220,8 @@ error:
 
 #undef MSDOS
 #undef OS2
-#undef _WIN32
-#undef _WIN32_WCE
+//undef _WIN32
+//undef _WIN32_WCE
 #undef COMPRESS_MF_MT
 #undef _NO_EXCEPTIONS
 #include "C/Common/MyInitGuid.h"

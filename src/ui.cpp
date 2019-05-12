@@ -445,12 +445,12 @@ void UiPacker::doCallback(unsigned isize, unsigned osize) {
 // pack
 **************************************************************************/
 
-void UiPacker::uiPackStart(const OutputFile *fo) {
+void UiPacker::uiPackStart(const UPXOutputFile *fo) {
     total_files++;
     UNUSED(fo);
 }
 
-void UiPacker::uiPackEnd(const OutputFile *fo) {
+void UiPacker::uiPackEnd(const UPXOutputFile *fo) {
     uiUpdate(fo->st_size());
 
     if (s->mode == M_QUIET)
@@ -480,12 +480,12 @@ void UiPacker::uiPackTotal() {
 // unpack
 **************************************************************************/
 
-void UiPacker::uiUnpackStart(const OutputFile *fo) {
+void UiPacker::uiUnpackStart(const UPXOutputFile *fo) {
     total_files++;
     UNUSED(fo);
 }
 
-void UiPacker::uiUnpackEnd(const OutputFile *fo) {
+void UiPacker::uiUnpackEnd(const UPXOutputFile *fo) {
     uiUpdate(-1, fo->getBytesWritten());
 
     if (s->mode == M_QUIET)

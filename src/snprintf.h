@@ -42,17 +42,17 @@ int __acc_cdecl_va upx_snprintf (char *str, upx_rsize_t max_size, const char *fo
 int                upx_vasprintf(char **ptr, const char *format, va_list ap);
 int __acc_cdecl_va upx_asprintf (char **ptr, const char *format, ...);
 
-upx_rsize_t upx_strlen(const char *);
+upx_rsize_t upx_strlen(const upx_byte *s);
 
 #ifdef __cplusplus
 }
 #endif
 
 // globally redirect some functions
-#undef sprintf
-#define sprintf error_sprintf_is_dangerous_use_snprintf
-#undef strlen
-#define strlen upx_strlen
+
+
+
+
 
 /*************************************************************************
 // some unsigned char string support functions

@@ -128,7 +128,7 @@ void PackWcle::buildLoader(const Filter *ft)
 // util
 **************************************************************************/
 
-void PackWcle::handleStub(OutputFile *fo)
+void PackWcle::handleStub(UPXOutputFile *fo)
 {
     if (fo && !opt->watcom_le.le)
         Packer::handleStub(fi,fo,le_offset);
@@ -447,7 +447,7 @@ void PackWcle::encodeImage(Filter *ft)
 }
 
 
-void PackWcle::pack(OutputFile *fo)
+void PackWcle::pack(UPXOutputFile *fo)
 {
     handleStub(fo);
 
@@ -800,7 +800,7 @@ void PackWcle::virt2rela(const le_object_table_entry_t *entr,unsigned *objn,unsi
 //
 **************************************************************************/
 
-void PackWcle::unpack(OutputFile *fo)
+void PackWcle::unpack(UPXOutputFile *fo)
 {
     handleStub(fo);
 

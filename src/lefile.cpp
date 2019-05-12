@@ -32,7 +32,7 @@
 #include "lefile.h"
 
 
-LeFile::LeFile(InputFile *f) :
+LeFile::LeFile(UPXInputFile *f) :
     fif(f), fof(NULL),
     le_offset(0), exe_offset(0)
 {
@@ -274,7 +274,7 @@ bool LeFile::readFileHeader()
 }
 
 
-void LeFile::writeFile(OutputFile *f, bool le)
+void LeFile::writeFile(UPXOutputFile *f, bool le)
 {
     fof = f;
     memcpy (&oh,&ih,(char*)&oh.memory_pages-(char*)&oh); // copy some members of the orig. header

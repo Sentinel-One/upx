@@ -39,7 +39,7 @@ class PackArmPe : public PeFile32
     typedef PeFile32 super;
 
 public:
-    PackArmPe(InputFile *f);
+    PackArmPe(UPXInputFile *f);
     virtual ~PackArmPe();
     virtual int getFormat() const { return UPX_F_WINCE_ARM_PE; }
     virtual const char *getName() const { return "arm/pe"; }
@@ -58,7 +58,7 @@ public:
     virtual unsigned getProcessImportParam(unsigned upxsection);
     virtual void setOhDataBase(const pe_section_t *osection);
     virtual void setOhHeaderSize(const pe_section_t *osection);
-    virtual void pack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
 
     virtual bool canPack();
 

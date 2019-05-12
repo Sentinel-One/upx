@@ -47,7 +47,7 @@ static const
 //
 **************************************************************************/
 
-PackExe::PackExe(InputFile *f) :
+PackExe::PackExe(UPXInputFile *f) :
     super(f)
 {
     bele = &N_BELE_RTP::le_policy;
@@ -449,7 +449,7 @@ unsigned optimize_relocs(upx_byte *b, const unsigned size,
 //
 **************************************************************************/
 
-void PackExe::pack(OutputFile *fo)
+void PackExe::pack(UPXOutputFile *fo)
 {
     unsigned ic;
 
@@ -685,7 +685,7 @@ int PackExe::canUnpack()
 //
 **************************************************************************/
 
-void PackExe::unpack(OutputFile *fo)
+void PackExe::unpack(UPXOutputFile *fo)
 {
     ibuf.alloc(file_size);
     obuf.allocForUncompression(ph.u_len);

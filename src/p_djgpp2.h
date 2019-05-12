@@ -39,7 +39,7 @@ class PackDjgpp2 : public Packer
     typedef Packer super;
 
 public:
-    PackDjgpp2(InputFile *f);
+    PackDjgpp2(UPXInputFile *f);
     virtual int getVersion() const { return 14; }
     virtual int getFormat() const { return UPX_F_DJGPP2_COFF; }
     virtual const char *getName() const { return "djgpp2/coff"; }
@@ -47,14 +47,14 @@ public:
     virtual const int *getCompressionMethods(int method, int level) const;
     virtual const int *getFilters() const;
 
-    virtual void pack(OutputFile *fo);
-    virtual void unpack(OutputFile *fo);
+    virtual void pack(UPXOutputFile *fo);
+    virtual void unpack(UPXOutputFile *fo);
 
     virtual bool canPack();
     virtual int canUnpack();
 
 protected:
-    virtual void handleStub(OutputFile *fo);
+    virtual void handleStub(UPXOutputFile *fo);
     virtual int readFileHeader();
 
     virtual unsigned findOverlapOverhead(const upx_bytep buf,

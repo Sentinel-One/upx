@@ -46,7 +46,7 @@ static const
 //
 **************************************************************************/
 
-PackW64Pep::PackW64Pep(InputFile *f) : super(f)
+PackW64Pep::PackW64Pep(UPXInputFile *f) : super(f)
 {}
 
 
@@ -271,7 +271,7 @@ void PackW64Pep::setOhHeaderSize(const pe_section_t *)
     oh.headersize = rvamin; // FIXME
 }
 
-void PackW64Pep::pack(OutputFile *fo)
+void PackW64Pep::pack(UPXOutputFile *fo)
 {
     // FIXME: Relocation stripping disabled for now - Stefan Widmann
     opt->win32_pe.strip_relocs = false;

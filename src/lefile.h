@@ -29,8 +29,8 @@
 #ifndef __UPX_LEFILE_H
 #define __UPX_LEFILE_H 1
 
-class InputFile;
-class OutputFile;
+class UPXInputFile;
+class UPXOutputFile;
 
 
 /*************************************************************************
@@ -40,11 +40,11 @@ class OutputFile;
 class LeFile
 {
 public:
-    LeFile(InputFile *);
+    LeFile(UPXInputFile *);
     virtual ~LeFile();
 
     virtual bool readFileHeader();
-    virtual void writeFile(OutputFile *, bool);
+    virtual void writeFile(UPXOutputFile *, bool);
 
 protected:
     enum { FIXUP_EXTRA = 3 };
@@ -178,8 +178,8 @@ protected:
     void countFixups(unsigned *) const;
     unsigned getImageSize() const;
 
-    InputFile *fif;
-    OutputFile *fof;
+    UPXInputFile *fif;
+    UPXOutputFile *fof;
     unsigned le_offset;
     unsigned exe_offset;
 

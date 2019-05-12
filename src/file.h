@@ -36,11 +36,11 @@ class MemBuffer;
 //
 **************************************************************************/
 
-class File
+class UPXFile
 {
 protected:
-    File() { }
-    virtual ~File() { }
+    UPXFile() { }
+    virtual ~UPXFile() { }
 public:
     static void chmod(const char *name, int mode);
     static void rename(const char *old_, const char *new_);
@@ -48,11 +48,11 @@ public:
 };
 
 
-class FileBase : public File
+class UPXFileBase : public UPXFile
 {
 protected:
-    FileBase();
-    virtual ~FileBase();
+    UPXFileBase();
+    virtual ~UPXFileBase();
 public:
     virtual bool close();
     virtual void closex();
@@ -86,12 +86,12 @@ public:
 //
 **************************************************************************/
 
-class InputFile : public FileBase
+class UPXInputFile : public UPXFileBase
 {
-    typedef FileBase super;
+    typedef UPXFileBase super;
 public:
-    InputFile();
-    virtual ~InputFile();
+    UPXInputFile();
+    virtual ~UPXInputFile();
 
     virtual void sopen(const char *name, int flags, int shflags);
     virtual void open(const char *name, int flags)
@@ -118,12 +118,12 @@ protected:
 //
 **************************************************************************/
 
-class OutputFile : public FileBase
+class UPXOutputFile : public UPXFileBase
 {
-    typedef FileBase super;
+    typedef UPXFileBase super;
 public:
-    OutputFile();
-    virtual ~OutputFile();
+    UPXOutputFile();
+    virtual ~UPXOutputFile();
 
     virtual void sopen(const char *name, int flags, int shflags, int mode);
     virtual void open(const char *name, int flags, int mode)
@@ -158,9 +158,9 @@ protected:
 **************************************************************************/
 
 #if 0 /* NOT USED */
-class MemoryOutputFile : public FileBase
+class MemoryOutputFile : public UPXFileBase
 {
-    typedef FileBase super;
+    typedef UPXFileBase super;
 public:
     MemoryOutputFile();
     virtual ~MemoryOutputFile() { b = NULL; }

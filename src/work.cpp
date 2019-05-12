@@ -96,7 +96,7 @@ void do_one_file(const char *iname, char *oname) {
             throwIOException("file is write protected -- skipped");
     }
 
-    InputFile fi;
+    UPXInputFile fi;
     fi.st = st;
     fi.sopen(iname, O_RDONLY | O_BINARY, SH_DENYWR);
 
@@ -110,7 +110,7 @@ void do_one_file(const char *iname, char *oname) {
 #endif
 
     // open output file
-    OutputFile fo;
+    UPXOutputFile fo;
     if (opt->cmd == CMD_COMPRESS || opt->cmd == CMD_DECOMPRESS) {
         if (opt->to_stdout) {
             if (!fo.openStdout(1, opt->force ? true : false))
@@ -193,15 +193,15 @@ void do_one_file(const char *iname, char *oname) {
             r = chmod(iname, 0777);
             IGNORE_ERROR(r);
 #endif
-            File::unlink(iname);
+            UPXFile::unlink(iname);
         } else {
             // make backup
             char bakname[ACC_FN_PATH_MAX + 1];
             if (!makebakname(bakname, sizeof(bakname), iname))
                 throwIOException("could not create a backup file name");
-            File::rename(iname, bakname);
+            UPXFile::rename(iname, bakname);
         }
-        File::rename(oname, iname);
+        UPXFile::rename(oname, iname);
     }
 
     // copy file attributes

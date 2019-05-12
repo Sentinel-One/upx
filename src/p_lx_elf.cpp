@@ -86,7 +86,7 @@ up8(unsigned x)
 #endif  //}
 
 static off_t
-fpad4(OutputFile *fo)
+fpad4(UPXOutputFile *fo)
 {
     off_t len = fo->st_size();
     unsigned d = 3u & (0 - len);
@@ -96,7 +96,7 @@ fpad4(OutputFile *fo)
 }
 
 static off_t
-fpad8(OutputFile *fo)
+fpad8(UPXOutputFile *fo)
 {
     off_t len = fo->st_size();
     unsigned d = 7u & (0 - len);
@@ -106,7 +106,7 @@ fpad8(OutputFile *fo)
 }
 
 static unsigned
-funpad4(InputFile *fi)
+funpad4(UPXInputFile *fi)
 {
     unsigned d = 3u & (0 - fi->tell());
     if (d)
@@ -221,7 +221,7 @@ PackLinuxElf64::checkEhdr(Elf64_Ehdr const *ehdr) const
     return 0;
 }
 
-PackLinuxElf::PackLinuxElf(InputFile *f)
+PackLinuxElf::PackLinuxElf(UPXInputFile *f)
     : super(f), e_phnum(0), dynstr(NULL),
     sz_phdrs(0), sz_elf_hdrs(0), sz_pack2(0), sz_pack2a(0),
     lg2_page(12), page_size(1u<<lg2_page), is_pie(0),
@@ -238,7 +238,7 @@ PackLinuxElf::~PackLinuxElf()
 }
 
 void
-PackLinuxElf32::PackLinuxElf32help1(InputFile *f)
+PackLinuxElf32::PackLinuxElf32help1(UPXInputFile *f)
 {
     e_type  = get_te16(&ehdri.e_type);
     e_phnum = get_te16(&ehdri.e_phnum);
@@ -315,7 +315,7 @@ PackLinuxElf32::PackLinuxElf32help1(InputFile *f)
     }
 }
 
-off_t PackLinuxElf::pack3(OutputFile *fo, Filter &ft) // return length of output
+off_t PackLinuxElf::pack3(UPXOutputFile *fo, Filter &ft) // return length of output
 {
     unsigned disp;
     unsigned const zero = 0;
@@ -361,7 +361,7 @@ off_t PackLinuxElf::pack3(OutputFile *fo, Filter &ft) // return length of output
     return fpad4(fo);  // MATCH03
 }
 
-off_t PackLinuxElf32::pack3(OutputFile *fo, Filter &ft)
+off_t PackLinuxElf32::pack3(UPXOutputFile *fo, Filter &ft)
 {
     off_t flen = super::pack3(fo, ft);  // loader follows compressed PT_LOADs
     // NOTE: PackLinuxElf::pack3  adjusted xct_off for the extra page
@@ -482,7 +482,7 @@ off_t PackLinuxElf32::pack3(OutputFile *fo, Filter &ft)
     return flen;
 }
 
-off_t PackLinuxElf64::pack3(OutputFile *fo, Filter &ft)
+off_t PackLinuxElf64::pack3(UPXOutputFile *fo, Filter &ft)
 {
     off_t flen = super::pack3(fo, ft);  // loader follows compressed PT_LOADs
     // NOTE: PackLinuxElf::pack3  adjusted xct_off for the extra page
@@ -664,7 +664,7 @@ void PackLinuxElf64::defineSymbols(Filter const *ft)
     PackLinuxElf::defineSymbols(ft);
 }
 
-PackLinuxElf32::PackLinuxElf32(InputFile *f)
+PackLinuxElf32::PackLinuxElf32(UPXInputFile *f)
     : super(f), phdri(NULL), shdri(NULL),
     gnu_stack(NULL), note_body(NULL),
     page_mask(~0u<<lg2_page),
@@ -685,7 +685,7 @@ PackLinuxElf32::~PackLinuxElf32()
     delete[] note_body;
 }
 
-PackLinuxElf64::PackLinuxElf64(InputFile *f)
+PackLinuxElf64::PackLinuxElf64(UPXInputFile *f)
     : super(f), phdri(NULL), shdri(NULL),
     gnu_stack(NULL), note_body(NULL),
     page_mask(~0ull<<lg2_page),
@@ -708,7 +708,7 @@ PackLinuxElf64::~PackLinuxElf64()
 
 // FIXME: should be templated with PackLinuxElf32help1
 void
-PackLinuxElf64::PackLinuxElf64help1(InputFile *f)
+PackLinuxElf64::PackLinuxElf64help1(UPXInputFile *f)
 {
     e_type  = get_te16(&ehdri.e_type);
     e_phnum = get_te16(&ehdri.e_phnum);
@@ -867,41 +867,41 @@ void PackLinuxElf64::patchLoader()
 {
 }
 
-void PackLinuxElf32::ARM_updateLoader(OutputFile * /*fo*/)
+void PackLinuxElf32::ARM_updateLoader(UPXOutputFile * /*fo*/)
 {
     set_te32(&elfout.ehdr.e_entry, sz_pack2 +
         linker->getSymbolOffset("_start") +
         get_te32(&elfout.phdr[0].p_vaddr));
 }
 
-void PackLinuxElf32armLe::updateLoader(OutputFile *fo)
+void PackLinuxElf32armLe::updateLoader(UPXOutputFile *fo)
 {
     ARM_updateLoader(fo);
 }
 
-void PackLinuxElf32armBe::updateLoader(OutputFile *fo)
+void PackLinuxElf32armBe::updateLoader(UPXOutputFile *fo)
 {
     ARM_updateLoader(fo);
 }
 
-void PackLinuxElf32mipsel::updateLoader(OutputFile *fo)
+void PackLinuxElf32mipsel::updateLoader(UPXOutputFile *fo)
 {
     ARM_updateLoader(fo);  // not ARM specific; (no 32-bit immediates)
 }
 
-void PackLinuxElf32mipseb::updateLoader(OutputFile *fo)
+void PackLinuxElf32mipseb::updateLoader(UPXOutputFile *fo)
 {
     ARM_updateLoader(fo);  // not ARM specific; (no 32-bit immediates)
 }
 
-void PackLinuxElf32::updateLoader(OutputFile * /*fo*/)
+void PackLinuxElf32::updateLoader(UPXOutputFile * /*fo*/)
 {
     unsigned start = linker->getSymbolOffset("_start");
     unsigned vbase = get_te32(&elfout.phdr[0].p_vaddr);
     set_te32(&elfout.ehdr.e_entry, start + sz_pack2 + vbase);
 }
 
-void PackLinuxElf64::updateLoader(OutputFile * /*fo*/)
+void PackLinuxElf64::updateLoader(UPXOutputFile * /*fo*/)
 {
     if (xct_off) {
         return;  // FIXME elfout has no values at all
@@ -925,7 +925,7 @@ void PackLinuxElf64::updateLoader(OutputFile * /*fo*/)
     }
 }
 
-PackLinuxElf32ppc::PackLinuxElf32ppc(InputFile *f)
+PackLinuxElf32ppc::PackLinuxElf32ppc(UPXInputFile *f)
     : super(f)
 {
     e_machine = Elf32_Ehdr::EM_PPC;
@@ -943,7 +943,7 @@ Linker* PackLinuxElf32ppc::newLinker() const
     return new ElfLinkerPpc32;
 }
 
-PackLinuxElf64ppcle::PackLinuxElf64ppcle(InputFile *f)
+PackLinuxElf64ppcle::PackLinuxElf64ppcle(UPXInputFile *f)
     : super(f), lg2_page(16), page_size(1u<<lg2_page)
 {
     e_machine = Elf64_Ehdr::EM_PPC64;
@@ -952,7 +952,7 @@ PackLinuxElf64ppcle::PackLinuxElf64ppcle(InputFile *f)
     ei_osabi  = Elf64_Ehdr::ELFOSABI_LINUX;
 }
 
-PackLinuxElf64ppc::PackLinuxElf64ppc(InputFile *f)
+PackLinuxElf64ppc::PackLinuxElf64ppc(UPXInputFile *f)
     : super(f), lg2_page(16), page_size(1u<<lg2_page)
 {
     e_machine = Elf64_Ehdr::EM_PPC64;
@@ -979,7 +979,7 @@ Linker* PackLinuxElf64ppc::newLinker() const
     return new ElfLinkerPpc64;
 }
 
-PackLinuxElf64amd::PackLinuxElf64amd(InputFile *f)
+PackLinuxElf64amd::PackLinuxElf64amd(UPXInputFile *f)
     : super(f)
 {
     // Why did PackLinuxElf64Le set lg2_page = 16 ?
@@ -991,7 +991,7 @@ PackLinuxElf64amd::PackLinuxElf64amd(InputFile *f)
     ei_osabi  = Elf32_Ehdr::ELFOSABI_LINUX;
 }
 
-PackLinuxElf64arm::PackLinuxElf64arm(InputFile *f)
+PackLinuxElf64arm::PackLinuxElf64arm(UPXInputFile *f)
     : super(f)
 {
     e_machine = Elf64_Ehdr::EM_AARCH64;
@@ -2292,7 +2292,7 @@ PackLinuxElf64::getbrk(const Elf64_Phdr *phdr, int nph) const
 
 void
 PackLinuxElf32::generateElfHdr(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     void const *proto,
     unsigned const brka
 )
@@ -2383,7 +2383,7 @@ PackLinuxElf32::generateElfHdr(
 
 void
 PackNetBSDElf32x86::generateElfHdr(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     void const *proto,
     unsigned const brka
 )
@@ -2490,7 +2490,7 @@ PackNetBSDElf32x86::generateElfHdr(
 
 void
 PackOpenBSDElf32x86::generateElfHdr(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     void const *proto,
     unsigned const brka
 )
@@ -2560,7 +2560,7 @@ PackOpenBSDElf32x86::generateElfHdr(
 
 void
 PackLinuxElf64::generateElfHdr(
-    OutputFile *fo,
+    UPXOutputFile *fo,
     void const *proto,
     unsigned const brka
 )
@@ -2651,7 +2651,7 @@ PackLinuxElf64::generateElfHdr(
 #include "p_elf_enum.h"
 #undef WANT_REL_ENUM
 
-void PackLinuxElf32::pack1(OutputFile *fo, Filter & /*ft*/)
+void PackLinuxElf32::pack1(UPXOutputFile *fo, Filter & /*ft*/)
 {
     fi->seek(0, SEEK_SET);
     fi->readx(&ehdri, sizeof(ehdri));
@@ -2955,7 +2955,7 @@ void PackLinuxElf32::pack1(OutputFile *fo, Filter & /*ft*/)
     }
 }
 
-void PackLinuxElf32x86::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf32x86::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -2963,7 +2963,7 @@ void PackLinuxElf32x86::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, stub_i386_linux_elf_fold, getbrk(phdri, e_phnum) );
 }
 
-void PackBSDElf32x86::pack1(OutputFile *fo, Filter &ft)
+void PackBSDElf32x86::pack1(UPXOutputFile *fo, Filter &ft)
 {
     PackLinuxElf32::pack1(fo, ft);
     if (0!=xct_off) // shared library
@@ -2971,7 +2971,7 @@ void PackBSDElf32x86::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, stub_i386_bsd_elf_fold, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf32armLe::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf32armLe::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -2993,7 +2993,7 @@ void PackLinuxElf32armLe::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, &h3, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf32armBe::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf32armBe::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3005,7 +3005,7 @@ void PackLinuxElf32armBe::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, &h3, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf32mipsel::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf32mipsel::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3015,7 +3015,7 @@ void PackLinuxElf32mipsel::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, &h3, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf32mipseb::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf32mipseb::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3025,7 +3025,7 @@ void PackLinuxElf32mipseb::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, &h3, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf32ppc::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf32ppc::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3033,7 +3033,7 @@ void PackLinuxElf32ppc::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, stub_powerpc_linux_elf_fold, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf64ppcle::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf64ppcle::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3041,7 +3041,7 @@ void PackLinuxElf64ppcle::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, stub_powerpc64le_linux_elf_fold, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf64ppc::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf64ppc::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3049,7 +3049,7 @@ void PackLinuxElf64ppc::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, stub_powerpc64_linux_elf_fold, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf64::pack1(OutputFile *fo, Filter & /*ft*/)
+void PackLinuxElf64::pack1(UPXOutputFile *fo, Filter & /*ft*/)
 {
     fi->seek(0, SEEK_SET);
     fi->readx(&ehdri, sizeof(ehdri));
@@ -3334,7 +3334,7 @@ void PackLinuxElf64::pack1(OutputFile *fo, Filter & /*ft*/)
     }
 }
 
-void PackLinuxElf64amd::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf64amd::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3342,7 +3342,7 @@ void PackLinuxElf64amd::pack1(OutputFile *fo, Filter &ft)
     generateElfHdr(fo, stub_amd64_linux_elf_fold, getbrk(phdri, e_phnum) );
 }
 
-void PackLinuxElf64arm::pack1(OutputFile *fo, Filter &ft)
+void PackLinuxElf64arm::pack1(UPXOutputFile *fo, Filter &ft)
 {
     super::pack1(fo, ft);
     if (0!=xct_off)  // shared library
@@ -3390,7 +3390,7 @@ unsigned PackLinuxElf32::find_LOAD_gap(
     return lo - hi;
 }
 
-int PackLinuxElf32::pack2(OutputFile *fo, Filter &ft)
+int PackLinuxElf32::pack2(UPXOutputFile *fo, Filter &ft)
 {
     Extent x;
     unsigned k;
@@ -3514,7 +3514,7 @@ unsigned PackLinuxElf64::find_LOAD_gap(
     return lo - hi;
 }
 
-int PackLinuxElf64::pack2(OutputFile *fo, Filter &ft)
+int PackLinuxElf64::pack2(UPXOutputFile *fo, Filter &ft)
 {
     Extent x;
     unsigned k;
@@ -3711,7 +3711,7 @@ void PackLinuxElf32mipsel::defineSymbols(Filter const *ft)
     PackLinuxElf32::defineSymbols(ft);
 }
 
-void PackLinuxElf32::pack4(OutputFile *fo, Filter &ft)
+void PackLinuxElf32::pack4(UPXOutputFile *fo, Filter &ft)
 {
     overlay_offset = sz_elf_hdrs + sizeof(linfo);
 
@@ -3772,7 +3772,7 @@ void PackLinuxElf32::pack4(OutputFile *fo, Filter &ft)
     }
 }
 
-void PackLinuxElf64::pack4(OutputFile *fo, Filter &ft)
+void PackLinuxElf64::pack4(UPXOutputFile *fo, Filter &ft)
 {
     overlay_offset = sz_elf_hdrs + sizeof(linfo);
 
@@ -3831,7 +3831,7 @@ PackLinuxElf32::unRel32(
     unsigned relsz,
     MemBuffer &ptload1,
     unsigned const load_off,
-    OutputFile *fo
+    UPXOutputFile *fo
 )
 {
     Elf32_Rel *rel = rel0;
@@ -3875,7 +3875,7 @@ PackLinuxElf64::unRela64(
     unsigned relasz,
     MemBuffer &ptload1,
     upx_uint64_t const load_off,
-    OutputFile *fo
+    UPXOutputFile *fo
 )
 {
     Elf64_Rela *rela = rela0;
@@ -3911,7 +3911,7 @@ PackLinuxElf64::unRela64(
     fo->rewrite(rela0, relasz);
 }
 
-void PackLinuxElf64::unpack(OutputFile *fo)
+void PackLinuxElf64::unpack(UPXOutputFile *fo)
 {
     if (e_phoff != sizeof(Elf64_Ehdr)) {// Phdrs not contiguous with Ehdr
         throwCantUnpack("bad e_phoff");
@@ -4235,7 +4235,7 @@ void PackLinuxElf64::unpack(OutputFile *fo)
 //
 **************************************************************************/
 
-PackLinuxElf32x86::PackLinuxElf32x86(InputFile *f) : super(f)
+PackLinuxElf32x86::PackLinuxElf32x86(UPXInputFile *f) : super(f)
 {
     e_machine = Elf32_Ehdr::EM_386;
     ei_class  = Elf32_Ehdr::ELFCLASS32;
@@ -4252,7 +4252,7 @@ Linker* PackLinuxElf32x86::newLinker() const
     return new ElfLinkerX86;
 }
 
-PackBSDElf32x86::PackBSDElf32x86(InputFile *f) : super(f)
+PackBSDElf32x86::PackBSDElf32x86(UPXInputFile *f) : super(f)
 {
     e_machine = Elf32_Ehdr::EM_386;
     ei_class  = Elf32_Ehdr::ELFCLASS32;
@@ -4263,7 +4263,7 @@ PackBSDElf32x86::~PackBSDElf32x86()
 {
 }
 
-PackFreeBSDElf32x86::PackFreeBSDElf32x86(InputFile *f) : super(f)
+PackFreeBSDElf32x86::PackFreeBSDElf32x86(UPXInputFile *f) : super(f)
 {
     ei_osabi  = Elf32_Ehdr::ELFOSABI_FREEBSD;
 }
@@ -4272,7 +4272,7 @@ PackFreeBSDElf32x86::~PackFreeBSDElf32x86()
 {
 }
 
-PackNetBSDElf32x86::PackNetBSDElf32x86(InputFile *f) : super(f)
+PackNetBSDElf32x86::PackNetBSDElf32x86(UPXInputFile *f) : super(f)
 {
     ei_osabi  = Elf32_Ehdr::ELFOSABI_NETBSD;
     osabi_note = "NetBSD";
@@ -4282,7 +4282,7 @@ PackNetBSDElf32x86::~PackNetBSDElf32x86()
 {
 }
 
-PackOpenBSDElf32x86::PackOpenBSDElf32x86(InputFile *f) : super(f)
+PackOpenBSDElf32x86::PackOpenBSDElf32x86(UPXInputFile *f) : super(f)
 {
     ei_osabi  = Elf32_Ehdr::ELFOSABI_OPENBSD;
     osabi_note = "OpenBSD";
@@ -4315,7 +4315,7 @@ PackLinuxElf32x86::getFilters() const
     return filters;
 }
 
-PackLinuxElf32armLe::PackLinuxElf32armLe(InputFile *f) : super(f)
+PackLinuxElf32armLe::PackLinuxElf32armLe(UPXInputFile *f) : super(f)
 {
     e_machine = Elf32_Ehdr::EM_ARM;
     ei_class  = Elf32_Ehdr::ELFCLASS32;
@@ -4327,7 +4327,7 @@ PackLinuxElf32armLe::~PackLinuxElf32armLe()
 {
 }
 
-PackLinuxElf32mipseb::PackLinuxElf32mipseb(InputFile *f) : super(f)
+PackLinuxElf32mipseb::PackLinuxElf32mipseb(UPXInputFile *f) : super(f)
 {
     e_machine = Elf32_Ehdr::EM_MIPS;
     ei_class  = Elf32_Ehdr::ELFCLASS32;
@@ -4339,7 +4339,7 @@ PackLinuxElf32mipseb::~PackLinuxElf32mipseb()
 {
 }
 
-PackLinuxElf32mipsel::PackLinuxElf32mipsel(InputFile *f) : super(f)
+PackLinuxElf32mipsel::PackLinuxElf32mipsel(UPXInputFile *f) : super(f)
 {
     e_machine = Elf32_Ehdr::EM_MIPS;
     ei_class  = Elf32_Ehdr::ELFCLASS32;
@@ -4366,7 +4366,7 @@ Linker* PackLinuxElf32mipsel::newLinker() const
     return new ElfLinkerMipsLE();
 }
 
-PackLinuxElf32armBe::PackLinuxElf32armBe(InputFile *f) : super(f)
+PackLinuxElf32armBe::PackLinuxElf32armBe(UPXInputFile *f) : super(f)
 {
     e_machine = Elf32_Ehdr::EM_ARM;
     ei_class  = Elf32_Ehdr::ELFCLASS32;
@@ -4675,7 +4675,7 @@ Elf64_Sym const *PackLinuxElf64::elf_lookup(char const *name) const
 
 }
 
-void PackLinuxElf32::unpack(OutputFile *fo)
+void PackLinuxElf32::unpack(UPXOutputFile *fo)
 {
     if (e_phoff != sizeof(Elf32_Ehdr)) {// Phdrs not contiguous with Ehdr
         throwCantUnpack("bad e_phoff");
@@ -4995,7 +4995,7 @@ void PackLinuxElf32::unpack(OutputFile *fo)
         throwChecksumError();
 }
 
-void PackLinuxElf::unpack(OutputFile * /*fo*/)
+void PackLinuxElf::unpack(UPXOutputFile * /*fo*/)
 {
     throwCantUnpack("internal error");
 }

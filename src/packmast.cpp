@@ -57,7 +57,7 @@
 //
 **************************************************************************/
 
-PackMaster::PackMaster(InputFile *f, options_t *o) : fi(f), p(NULL) {
+PackMaster::PackMaster(UPXInputFile *f, options_t *o) : fi(f), p(NULL) {
     // replace global options with local options
     saved_opt = o;
     if (o) {
@@ -83,7 +83,7 @@ PackMaster::~PackMaster() {
 static Packer *try_pack(Packer *p, void *user) {
     if (p == NULL)
         return NULL;
-    InputFile *f = (InputFile *) user;
+    UPXInputFile *f = (UPXInputFile *) user;
     p->assertPacker();
     try {
         p->initPackHeader();
@@ -106,7 +106,7 @@ static Packer *try_pack(Packer *p, void *user) {
 static Packer *try_unpack(Packer *p, void *user) {
     if (p == NULL)
         return NULL;
-    InputFile *f = (InputFile *) user;
+    UPXInputFile *f = (UPXInputFile *) user;
     p->assertPacker();
     try {
         p->initPackHeader();
@@ -133,7 +133,7 @@ static Packer *try_unpack(Packer *p, void *user) {
 //
 **************************************************************************/
 
-Packer *PackMaster::visitAllPackers(visit_func_t func, InputFile *f, const options_t *o,
+Packer *PackMaster::visitAllPackers(visit_func_t func, UPXInputFile *f, const options_t *o,
                                     void *user) {
     Packer *p = NULL;
 
@@ -236,7 +236,7 @@ Packer *PackMaster::visitAllPackers(visit_func_t func, InputFile *f, const optio
 #undef D
 }
 
-Packer *PackMaster::getPacker(InputFile *f) {
+Packer *PackMaster::getPacker(UPXInputFile *f) {
     Packer *pp = visitAllPackers(try_pack, f, opt, f);
     if (!pp)
         throwUnknownExecutableFormat();
@@ -244,7 +244,7 @@ Packer *PackMaster::getPacker(InputFile *f) {
     return pp;
 }
 
-Packer *PackMaster::getUnpacker(InputFile *f) {
+Packer *PackMaster::getUnpacker(UPXInputFile *f) {
     Packer *pp = visitAllPackers(try_unpack, f, opt, f);
     if (!pp)
         throwNotPacked();
@@ -256,13 +256,13 @@ Packer *PackMaster::getUnpacker(InputFile *f) {
 // delegation
 **************************************************************************/
 
-void PackMaster::pack(OutputFile *fo) {
+void PackMaster::pack(UPXOutputFile *fo) {
     p = getPacker(fi);
     fi = NULL;
     p->doPack(fo);
 }
 
-void PackMaster::unpack(OutputFile *fo) {
+void PackMaster::unpack(UPXOutputFile *fo) {
     p = getUnpacker(fi);
     p->assertPacker();
     fi = NULL;

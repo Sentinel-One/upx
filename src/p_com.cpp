@@ -90,7 +90,7 @@ bool PackCom::canPack()
 //
 **************************************************************************/
 
-void PackCom::patchLoader(OutputFile *fo,
+void PackCom::patchLoader(UPXOutputFile *fo,
                           upx_byte *loader, int lsize,
                           unsigned calls)
 {
@@ -182,7 +182,7 @@ void PackCom::addFilter16(int filter_id)
 //
 **************************************************************************/
 
-void PackCom::pack(OutputFile *fo)
+void PackCom::pack(UPXOutputFile *fo)
 {
     // read file
     ibuf.alloc(file_size);
@@ -233,7 +233,7 @@ int PackCom::canUnpack()
 //
 **************************************************************************/
 
-void PackCom::unpack(OutputFile *fo)
+void PackCom::unpack(UPXOutputFile *fo)
 {
     ibuf.alloc(file_size);
     obuf.allocForUncompression(ph.u_len);

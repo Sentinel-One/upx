@@ -29,6 +29,94 @@
 #ifndef __UPX_CONF_H
 #define __UPX_CONF_H 1
 
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
+    #ifdef _MSC_BUILD
+    #include <windows.h>
+    #endif
+    
 #include "version.h"
 
 #if !defined(_FILE_OFFSET_BITS)
@@ -722,13 +810,6 @@ int upx_test_overlap       ( const upx_bytep buf,
                                    unsigned* dst_len,
                                    int method,
                              const upx_compress_result_t *cresult );
-
-
-#if (ACC_OS_CYGWIN || ACC_OS_DOS16 || ACC_OS_DOS32 || ACC_OS_EMX || ACC_OS_OS2 || ACC_OS_OS216 || ACC_OS_WIN16 || ACC_OS_WIN32 || ACC_OS_WIN64)
-#  if defined(INVALID_HANDLE_VALUE) || defined(MAKEWORD) || defined(RT_CURSOR)
-#    error "something pulled in <windows.h>"
-#  endif
-#endif
 
 
 #endif /* already included */

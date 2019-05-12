@@ -64,7 +64,7 @@ bool PackSys::canPack()
 //
 **************************************************************************/
 
-void PackSys::patchLoader(OutputFile *fo,
+void PackSys::patchLoader(UPXOutputFile *fo,
                           upx_byte *loader, int lsize,
                           unsigned calls)
 {

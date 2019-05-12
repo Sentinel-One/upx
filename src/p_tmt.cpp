@@ -43,7 +43,7 @@ static const
 //
 **************************************************************************/
 
-PackTmt::PackTmt(InputFile *f) : super(f)
+PackTmt::PackTmt(UPXInputFile *f) : super(f)
 {
     bele = &N_BELE_RTP::le_policy;
     COMPILE_TIME_ASSERT(sizeof(tmt_header_t) == 44);
@@ -192,7 +192,7 @@ bool PackTmt::canPack()
 //
 **************************************************************************/
 
-void PackTmt::pack(OutputFile *fo)
+void PackTmt::pack(UPXOutputFile *fo)
 {
     big_relocs = 0;
 
@@ -304,7 +304,7 @@ int PackTmt::canUnpack()
 }
 
 
-void PackTmt::unpack(OutputFile *fo)
+void PackTmt::unpack(UPXOutputFile *fo)
 {
     Packer::handleStub(fi,fo,adam_offset);
 

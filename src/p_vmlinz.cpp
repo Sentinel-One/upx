@@ -51,7 +51,7 @@ static const unsigned bzimage_offset = 0x100000;
 //
 **************************************************************************/
 
-PackVmlinuzI386::PackVmlinuzI386(InputFile *f) :
+PackVmlinuzI386::PackVmlinuzI386(UPXInputFile *f) :
     super(f), physical_start(0x100000), page_offset(0), config_physical_align(0)
     , filter_len(0)
 {
@@ -446,7 +446,7 @@ void PackVmlinuzI386::buildLoader(const Filter *ft)
 }
 
 
-void PackVmlinuzI386::pack(OutputFile *fo)
+void PackVmlinuzI386::pack(UPXOutputFile *fo)
 {
     readKernel();
 
@@ -563,7 +563,7 @@ void PackBvmlinuzI386::buildLoader(const Filter *ft)
 }
 
 
-void PackBvmlinuzI386::pack(OutputFile *fo)
+void PackBvmlinuzI386::pack(UPXOutputFile *fo)
 {
     readKernel();
 
@@ -679,7 +679,7 @@ int PackVmlinuzI386::canUnpack()
 }
 
 
-void PackVmlinuzI386::unpack(OutputFile *fo)
+void PackVmlinuzI386::unpack(UPXOutputFile *fo)
 {
     // no uncompression support for this format, so that
     // it is possible to remove the original deflate code (>10 KiB)
@@ -710,7 +710,7 @@ void PackVmlinuzI386::unpack(OutputFile *fo)
 }
 
 
-PackVmlinuzARMEL::PackVmlinuzARMEL(InputFile *f) :
+PackVmlinuzARMEL::PackVmlinuzARMEL(UPXInputFile *f) :
     super(f), setup_size(0), filter_len(0)
 {
     bele = &N_BELE_RTP::le_policy;
@@ -964,7 +964,7 @@ void PackVmlinuzARMEL::defineDecompressorSymbols()
     linker->defineSymbol("METHOD", ph.method);
 }
 
-unsigned PackVmlinuzARMEL::write_vmlinuz_head(OutputFile *fo)
+unsigned PackVmlinuzARMEL::write_vmlinuz_head(UPXOutputFile *fo)
 { // First word from vmlinuz-head.S
     fo->write(&stub_arm_v5a_linux_kernel_vmlinuz_head[0], 4);
 
@@ -979,7 +979,7 @@ unsigned PackVmlinuzARMEL::write_vmlinuz_head(OutputFile *fo)
     return sizeof(stub_arm_v5a_linux_kernel_vmlinuz_head);
 }
 
-void PackVmlinuzARMEL::pack(OutputFile *fo)
+void PackVmlinuzARMEL::pack(UPXOutputFile *fo)
 {
     readKernel();
 
@@ -1036,7 +1036,7 @@ int PackVmlinuzARMEL::canUnpack()
     return readPackHeader(1024) ? 1 : -1;
 }
 
-void PackVmlinuzARMEL::unpack(OutputFile *fo)
+void PackVmlinuzARMEL::unpack(UPXOutputFile *fo)
 {
     // no uncompression support for this format, so that
     // it is possible to remove the original deflate code (>10 KiB)

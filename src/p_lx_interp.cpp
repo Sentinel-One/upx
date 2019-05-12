@@ -55,7 +55,7 @@ static const
 static const
 #include "stub/i386-linux.elf.interp-fold.h"
 
-PackLinuxElf32x86interp::PackLinuxElf32x86interp(InputFile *f) :
+PackLinuxElf32x86interp::PackLinuxElf32x86interp(UPXInputFile *f) :
     super(f)
 {
 }
@@ -75,7 +75,7 @@ bool PackLinuxElf32x86interp::canPack()
     return super::canPack();
 }
 
-void PackLinuxElf32x86interp::pack1(OutputFile *fo, Filter &)
+void PackLinuxElf32x86interp::pack1(UPXOutputFile *fo, Filter &)
 {
     fi->seek(0, SEEK_SET);
     fi->readx(&ehdri, sizeof(ehdri));
@@ -124,7 +124,7 @@ void PackLinuxElf32x86interp::pack1(OutputFile *fo, Filter &)
 #undef E
 }
 
-int PackLinuxElf32x86interp::pack2(OutputFile *fo, Filter &ft)
+int PackLinuxElf32x86interp::pack2(UPXOutputFile *fo, Filter &ft)
 {
     if (opt->o_unix.make_ptinterp) {
         return 1;  // ignore current input file!
@@ -135,7 +135,7 @@ int PackLinuxElf32x86interp::pack2(OutputFile *fo, Filter &ft)
 #undef PAGE_MASK
 #define PAGE_MASK (~0u<<12)
 
-off_t PackLinuxElf32x86interp::pack3(OutputFile *fo, Filter &/*ft*/)
+off_t PackLinuxElf32x86interp::pack3(UPXOutputFile *fo, Filter &/*ft*/)
 {
     unsigned base = getbase(phdri, ehdri.e_phnum);
     unsigned sz = PAGE_MASK & (~PAGE_MASK + elfout.phdr[0].p_filesz);
@@ -195,7 +195,7 @@ off_t PackLinuxElf32x86interp::pack3(OutputFile *fo, Filter &/*ft*/)
 }
 
 
-void PackLinuxElf32x86interp::unpack(OutputFile *fo)
+void PackLinuxElf32x86interp::unpack(UPXOutputFile *fo)
 {
 #define MAX_INTERP_HDR 512
     union {

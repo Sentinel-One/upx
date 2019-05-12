@@ -72,6 +72,9 @@
 #endif
 #if 0 || (NO_SCREEN)
 #  undef USE_SCREEN
+    #ifdef USE_SCREEN_WIN32
+    #undef USE_SCREEN_WIN32
+    #endif
 #endif
 #if 0 || (NO_FRAMES) || !(USE_SCREEN)
 #  undef USE_FRAMES

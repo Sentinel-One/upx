@@ -29,8 +29,8 @@
 #define __UPX_PACKMASTER_H 1
 
 class Packer;
-class InputFile;
-class OutputFile;
+class UPXInputFile;
+class UPXOutputFile;
 
 /*************************************************************************
 // interface for work.cpp
@@ -38,24 +38,24 @@ class OutputFile;
 
 class PackMaster {
 public:
-    PackMaster(InputFile *f, options_t *o = NULL);
+    PackMaster(UPXInputFile *f, options_t *o = NULL);
     virtual ~PackMaster();
 
-    void pack(OutputFile *fo);
-    void unpack(OutputFile *fo);
+    void pack(UPXOutputFile *fo);
+    void unpack(UPXOutputFile *fo);
     void test();
     void list();
     void fileInfo();
 
     typedef Packer *(*visit_func_t)(Packer *p, void *user);
-    static Packer *visitAllPackers(visit_func_t, InputFile *f, const options_t *, void *user);
+    static Packer *visitAllPackers(visit_func_t, UPXInputFile *f, const options_t *, void *user);
 
 private:
-    InputFile *fi;
+    UPXInputFile *fi;
     Packer *p;
 
-    static Packer *getPacker(InputFile *f);
-    static Packer *getUnpacker(InputFile *f);
+    static Packer *getPacker(UPXInputFile *f);
+    static Packer *getUnpacker(UPXInputFile *f);
 
     // setup local options for each file
     options_t local_options;
